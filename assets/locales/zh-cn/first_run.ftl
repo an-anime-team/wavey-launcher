@@ -1,7 +1,7 @@
 welcome = 欢迎
 
 welcome-page-message =
-    你好呀～欢迎使用 The Honkers Railway Launcher
+    你好呀～欢迎使用 Wavey Launcher
 
     在开始游戏之前，程序需要进行准备，并下载默认组件
 
@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = 警告: 违反游戏协议
 
 tos-violation-warning-message =
-    本启动器并非官方程序，与{company-name}以及{company-alter-name}没有任何关系。
+    本启动器并非官方程序，与{company-name}没有任何关系。
 
     本工具设计目的是方便在 Linux 下玩{game-name}，其功能仅限于减少安装和运行游戏的麻烦。
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     其中某些第三方工具很有可能会违反{company-name}关于{game-name}的使用协议。
 
-    如果你使用本启动器，你的游戏账号可能会被{company-name}/{company-alter-name}认定违反协议。
+    如果你使用本启动器，你的游戏账号可能会被{company-name}认定违反协议。
 
-    一旦被认定违反协议，{company-name}/{company-alter-name}有可能对你的账号做出任何处理，包括封号。
+    一旦被认定违反协议，{company-name}有可能对你的账号做出任何处理，包括封号。
 
     如果你了解并接受通过非官方许可方式玩这款游戏所带来的风险，请单击“确定”。让我们一直抢过提瓦特大陆吧！
 

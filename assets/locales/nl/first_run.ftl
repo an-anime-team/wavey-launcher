@@ -8,7 +8,7 @@ welcome-page-message =
 tos-violation-warning = Waarschuwing voor overtreding van ToS
 
 tos-violation-warning-message =
-    Deze launcher is niet officiëel en heeft op geen enkele manier betrekking met {company-name} of {company-alter-name}.
+    Deze launcher is niet officiëel en heeft op geen enkele manier betrekking met {company-name}.
 
     Dit programma is ontworpen om het spelen van {game-name} op Linux makkelijker te maken, en is gemaakt met als enig doel on het spel makkelijiker te installeren en spelen op Linux
 
@@ -16,9 +16,9 @@ tos-violation-warning-message =
 
     Sommige hier gebruikte componenten zijn echter waarschijnlijk in strijd met de servicevoorwaarden van {company-name} voor {game-name}.
 
-    Als je deze launcher gebruikt, kan je account worden geïdentificeerd als niet-conform met de TOS door {company-name}/{company-alter-name} wijzigen.
+    Als je deze launcher gebruikt, kan je account worden geïdentificeerd als niet-conform met de TOS door {company-name} wijzigen.
 
-    Als dit gebeurt, is {company-name}/{company-alter-name} vrij om te doen wat ze willen, omdat je account de Servicevoorwaarden zou schenden. Inclusief een game ban.
+    Als dit gebeurt, is {company-name} vrij om te doen wat ze willen, omdat je account de Servicevoorwaarden zou schenden. Inclusief een game ban.
 
     Als je het risico snapt om het spel te spelen in een onofficiële manier, druk dan op OK om door te gaan
 

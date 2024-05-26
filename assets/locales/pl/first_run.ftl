@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Ostrzeżenie o naruszeniu regulaminu
 
 tos-violation-warning-message =
-    Ten launcher jest narzędziem nieoficjalnym i nie ma żadnego związku z {company-name} ani {company-alter-name}.
+    Ten launcher jest narzędziem nieoficjalnym i nie ma żadnego związku z {company-name}.
 
     Narzędzie to zostało zaprojektowane w celu ułatwienia grania w {game-name} na systemie Linux i zostało stworzone z jedynym celem instalowania i uruchamiania gry z mniejszymi kłopotami.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Jednak niektóre zastosowane tutaj komponenty prawdopodobnie łamią Warunki Korzystania {company-name} dla {game-name}.
 
-    Jeśli korzystasz z tego uruchamiacza, twoje konto gracza może zostać uznane za niezgodne z Warunkami Korzystania {company-name}/{company-alter-name}.
+    Jeśli korzystasz z tego uruchamiacza, twoje konto gracza może zostać uznane za niezgodne z Warunkami Korzystania {company-name}.
 
-    Jeśli do tego dojdzie, jako że twoje konto byłoby w sprzeczności z Warunkami Korzystania, {company-name}/{company-alter-name} mają prawo zrobić to, co chcą. Włącznie z blokadą.
+    Jeśli do tego dojdzie, jako że twoje konto byłoby w sprzeczności z Warunkami Korzystania, {company-name} mają prawo zrobić to, co chcą. Włącznie z blokadą.
 
     Jeśli rozumiesz ryzyko próby grania w grę w sposób nieoficjalny, naciśnij OK, aby kontynuować.
 

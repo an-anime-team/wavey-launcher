@@ -33,11 +33,11 @@ impl SimpleComponent for AboutDialog {
 
     view! {
         dialog = adw::AboutWindow {
-            set_application_name: "The Honkers Railway Launcher",
+            set_application_name: "Wavey Launcher",
             set_application_icon: APP_ID,
 
-            set_website: "https://github.com/an-anime-team/the-honkers-railway-launcher",
-            set_issue_url: "https://github.com/an-anime-team/the-honkers-railway-launcher/issues",
+            set_website: "https://github.com/an-anime-team/wavey-launcher",
+            set_issue_url: "https://github.com/an-anime-team/wavey-launcher/issues",
 
             set_license_type: gtk::License::Gpl30,
             set_version: &APP_VERSION,
@@ -48,7 +48,7 @@ impl SimpleComponent for AboutDialog {
 
             add_credit_section: (Some("Patch credits"), &[
                 "@mkrsym1 https://codeberg.org/mkrsym1",
-                "@EternalStudent https://github.com/EternalStudentDesuKa"
+                "@Teapot https://github.com/Teapot4195"
             ]),
 
             add_credit_section: (Some("An Anime Team"), &[
@@ -59,10 +59,6 @@ impl SimpleComponent for AboutDialog {
                 "Soham Nandy https://github.com/natimerry",
                 "@mkrsym1 https://github.com/mkrsym1"
             ]),
-
-            set_artists: &[
-                "@tapiobanana https://twitter.com/Tapiobanana"
-            ],
 
             set_translator_credits: &[
                 "Русский, English — Nikita Podvirnyi https://github.com/krypt0nn",

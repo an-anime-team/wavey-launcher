@@ -1,7 +1,7 @@
 welcome = Bienvenu
 
 welcome-page-message =
-    Bonjour ! Bienvenu dans The Honkers Railway Launcher
+    Bonjour ! Bienvenu dans Wavey Launcher
 
     Nous devons préparer quelques choses et télécharger les composants par défaut avant que vous ne puissiez démarrer le jeu
 
@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Avertissement : Non-respect des CGU
 
 tos-violation-warning-message =
-    Ce launcher est un outil non-officiel, il n'est associé ni à {company-name}, ni à {company-alter-name}.
+    Ce launcher est un outil non-officiel, il n'est associé ni à {company-name}.
 
     Cet outil est conçu pour faciliter l'accès au jeu {game-name} sur Linux, et a été créé dans le seul but d'installer et de lancer le jeu plus facilement.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Cependant, certains composants utilisés ne respectent pas les Conditions Générales d'Utilisation de {company-name} pour {game-name}.
 
-    Ainsi, si vous utilisez ce launcher, votre compte joueur peut être identifié comme non conformes aux CGU par {company-name}/{company-alter-name}.
+    Ainsi, si vous utilisez ce launcher, votre compte joueur peut être identifié comme non conformes aux CGU par {company-name}.
 
-    Si c'est le cas, étant donné que votre compte n'est pas conforme aux CGU, {company-name}/{company-alter-name} se réservent le droit d'agir comme bon leur semble. Leurs actions peuvent notamment inclure le bannissement de votre compte.
+    Si c'est le cas, étant donné que votre compte n'est pas conforme aux CGU, {company-name} se réservent le droit d'agir comme bon leur semble. Leurs actions peuvent notamment inclure le bannissement de votre compte.
 
     Si vous comprenez ces risques, appuyez sur "Continuer" pour venir explorer le monde de Teyvat !
 

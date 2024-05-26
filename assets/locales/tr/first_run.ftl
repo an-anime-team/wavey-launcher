@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Kullanım şartlarının ihlali uyarısı
 
 tos-violation-warning-message =
-    Bu başlatıcı, resmi olmayan bir araçtır ve hiçbir şekilde {company-name} veya {company-alter-name} ile ilgili değildir.
+    Bu başlatıcı, resmi olmayan bir araçtır ve hiçbir şekilde {company-name} ile ilgili değildir.
 
     Bu araç, Linux'ta {game-name} oynamayı kolaylaştırmak için tasarlanmıştır ve yalnızca oyunu daha az güçlükle yüklemek ve çalıştırmak amacıyla oluşturulmuştur.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Ancak burada kullanılan bazı bileşenler, {game-name} için {company-name} Hizmet Şartlarını ihlal ediyor olabilir.
 
-    Bu başlatıcıyı kullanıyorsanız, {game-name} hesabınız {company-name}/{company-alter-name} tarafından TOS uyumlu değil olarak tanımlanacaktır.
+    Bu başlatıcıyı kullanıyorsanız, {game-name} hesabınız {company-name} tarafından TOS uyumlu değil olarak tanımlanacaktır.
 
-    Böyle bir durumda, hesabınız Hizmet Koşullarına uymayacağından, {company-name}/{company-alter-name} istediğini yapmakta özgürdür. Banlamak dahil.
+    Böyle bir durumda, hesabınız Hizmet Koşullarına uymayacağından, {company-name} istediğini yapmakta özgürdür. Banlamak dahil.
 
     Eğer oyunu illegal yollarla oynamanın riskini anlıyorsanız, Tamam'a tıklayın
 

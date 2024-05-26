@@ -32,7 +32,7 @@ impl SimpleAsyncComponent for WelcomeApp {
                 },
 
                 gtk::Label {
-                    set_label: "The Honkers Railway Launcher",
+                    set_label: "Wavey Launcher",
                     set_margin_top: 32,
                     add_css_class: "title-1"
                 },

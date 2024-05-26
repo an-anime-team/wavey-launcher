@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Avvertimento sulla violazione dei Termini di Servizio
 
 tos-violation-warning-message =
-    Questo launcher è uno strumento non ufficiale, non ha a che fare in alcun modo con {company-name} né con {company-alter-name}.
+    Questo launcher è uno strumento non ufficiale, non ha a che fare in alcun modo con {company-name}.
 
     Questo strumento è fatto per rendere possibile giocare a {game-name} su Linux ed è stato creato con il solo scopo di installare ed eseguire il gioco con meno seccature.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Però alcuni componenti usati qui probabilmente violano i Termini di Servizio di {company-name} per {game-name}.
 
-    Se stai usando questo launcher, il tuo account potrebbe essere identificato come non conforme ai TdS da {company-name}/{company-alter-name}.
+    Se stai usando questo launcher, il tuo account potrebbe essere identificato come non conforme ai TdS da {company-name}.
 
-    Se ciò dovesse succedere, dato che il tuo account starebbe trasgredendo i TdS, {company-name}/{company-alter-name} sono liberi di fare quello che vogliono. Incluso il banning.
+    Se ciò dovesse succedere, dato che il tuo account starebbe trasgredendo i TdS, {company-name} sono liberi di fare quello che vogliono. Incluso il banning.
 
     Se comprendi il rischio che implica giocare al gioco in maniera inufficiale, premi OK per continuare
 

@@ -1,7 +1,7 @@
 welcome = Selamat datang
 
 welcome-page-message =
-    Halo! Selamat datang di The Honkers Railway Launcher
+    Halo! Selamat datang di Wavey Launcher
 
     Kami harus mempersiapkan beberapa hal dan mengunduh komponen bawaan sebelum Anda dapat menjalankan game
 
@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Peringatan pelanggaran ketentuan layanan
 
 tos-violation-warning-message =
-    Launcher ini tidak resmi dan tidak berhubungan dengan {company-name} ataupun {company-alter-name}.
+    Launcher ini tidak resmi dan tidak berhubungan dengan {company-name}.
 
     Aplikasi ini didesain untuk memfasilitasi bermain {game-name} di Linux dan dibuat dengan tujuan untuk memasang dan menjalankan game dengan sedikit kerepotan.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Namun, sebagian komponen yang digunakan kemungkinan besar melanggar {company-name} Ketentuan layanan untuk {game-name}.
 
-    Jika Anda menggunakan launcher ini, akun Anda bisa jadi teridentifikasi sebagai akun yang tidak mematuhi ketentuan layanan oleh {company-name}/{company-alter-name}
+    Jika Anda menggunakan launcher ini, akun Anda bisa jadi teridentifikasi sebagai akun yang tidak mematuhi ketentuan layanan oleh {company-name}
 
-    Jika hal ini terjadi, karena akun Anda akan melanggar ketentuan layanan, {company-name}/{company-alter-name} berhak untuk melakukan apa saja, termasuk banning
+    Jika hal ini terjadi, karena akun Anda akan melanggar ketentuan layanan, {company-name} berhak untuk melakukan apa saja, termasuk banning
 
     Jika Anda mengerti resiko yang ada untuk memainkan game ini secara tidak resmi, tekan OK untuk lanjut
 

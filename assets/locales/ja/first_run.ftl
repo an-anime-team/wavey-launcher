@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = 利用規約違反
 
 tos-violation-warning-message =
-    このランチャーは非公式なツールです。{company-name} や {company-alter-name} とは一切関係がございません.
+    このランチャーは非公式なツールです。{company-name} とは一切関係がございません.
 
     このツールは {game-name} をLinux上でプレイするために作成されました。また、手間をかけずに {game-name} をLinux上にインストール、そして実行するように設計されています。
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     ただし、このプログラムで使う一部のコンポーネントは {company-name} や {game-name} の利用規約に違反している可能性があります。
 
-    このランチャーを使うにあたって、あなたのゲームアカウントは利用規約違反として、 {company-name}/{company-alter-name} に認識される可能性があります。
+    このランチャーを使うにあたって、あなたのゲームアカウントは利用規約違反として、 {company-name} に認識される可能性があります。
 
-    その場合、あなたのアカウントは利用規約に従わないため、 {company-name}/{company-alter-name} はBANを含め、何かしらの処分を行う可能性があります。
+    その場合、あなたのアカウントは利用規約に従わないため、 {company-name} はBANを含め、何かしらの処分を行う可能性があります。
 
     このリスクを理解した場合、OKボタンを押して続行してください。
 

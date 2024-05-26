@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Upozornění na porušení smluvních podmínek
 
 tos-violation-warning-message =
-    Tento spouštěč je neoficiální nástroj, který nijak nesouvisí se společností {company-name} ani {company-alter-name}.
+    Tento spouštěč je neoficiální nástroj, který nijak nesouvisí se společností {company-name}.
 
     Tento nástroj je navržen tak, aby usnadnil hraní {game-name} na Linuxu, a byl vytvořen s jediným účelem – nainstalovat a spustit hru s menšími problémy.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Některé zde použité komponenty však pravděpodobně porušují smluvní podmínky {company-name} pro {game-name}.
 
-    Pokud používáte tento spouštěč, váš hráčský účet může být označen jako nesplňující TOS podle {company-name}/{company-alter-name}.
+    Pokud používáte tento spouštěč, váš hráčský účet může být označen jako nesplňující TOS podle {company-name}.
 
-    Pokud k tomu dojde a váš účet by porušil TOS, {company-name}/{company-alter-name} si může dělat, co chce. Včetně zákazu.
+    Pokud k tomu dojde a váš účet by porušil TOS, {company-name} si může dělat, co chce. Včetně zákazu.
 
     Pokud chápete riziko pokusu hrát hru neoficiálně, pokračujte stisknutím OK
 

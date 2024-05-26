@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Cảnh báo vi phạm TOS (Điều khoản dịch vụ)
 
 tos-violation-warning-message =
-    Launcher này là một công cụ không chính thức, hoàn toàn không liên quan đến {company-name} hay {company-alter-name}.
+    Launcher này là một công cụ không chính thức, hoàn toàn không liên quan đến {company-name}.
 
     Công cụ này được thiết kế để hỗ trợ việc chơi {game-name} trên Linux và được xây dựng với mục đích duy nhất là cài đặt và chạy trò chơi một cách dễ dàng hơn.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Tuy nhiên, một số thành phần được sử dụng ở đây có khả năng vi phạm TOS của {company-name} dành cho {game-name}.
 
-    Nếu bạn đang sử dụng Launcher này, tài khoản của bạn có thể bị {company-name}/{company-alter-name} xác định là vi phạm TOS.
+    Nếu bạn đang sử dụng Launcher này, tài khoản của bạn có thể bị {company-name} xác định là vi phạm TOS.
 
-    Nếu điều này xảy ra, vì tài khoản của bạn sẽ không tuân theo TOS, nên {company-name}/{company-alter-name} được tự do làm những gì họ muốn. Bao gồm cả việc khóa tài khoản
+    Nếu điều này xảy ra, vì tài khoản của bạn sẽ không tuân theo TOS, nên {company-name} được tự do làm những gì họ muốn. Bao gồm cả việc khóa tài khoản
 
     Nếu bạn hiểu những vấn đề khi thử chơi trò chơi bằng cách không chính thức, hãy nhấn OK để tiếp tục
 

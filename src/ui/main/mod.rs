@@ -184,7 +184,7 @@ impl SimpleComponent for App {
                         set_title_widget = &adw::WindowTitle {
                             #[watch]
                             set_title: match model.style {
-                                LauncherStyle::Modern => "The Honkers Railway Launcher",
+                                LauncherStyle::Modern => "Wavey Launcher",
                                 LauncherStyle::Classic => ""
                             }
                         },
@@ -227,7 +227,7 @@ impl SimpleComponent for App {
                             },
 
                             gtk::Label {
-                                set_label: "The Honkers Railway Launcher",
+                                set_label: "Wavey Launcher",
                                 set_margin_top: 32,
                                 add_css_class: "title-1"
                             }

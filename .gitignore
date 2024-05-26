@@ -1,5 +1,7 @@
 /target
 /.direnv
 
+*.xcf
+
 flamegraph.svg
 perf.data*

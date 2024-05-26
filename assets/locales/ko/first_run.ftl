@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     그러나 여기에 사용된 일부 구성 요소는 {company-name}의 {game-name} 서비스 약관을 위반할 수 있습니다
 
-    이 런처를 사용하는 경우, 플레이어 계정이 {company-name}/{company-alter-name}에 의해 TOS를 준수하지 않는 것으로 식별될 수 있습니다
+    이 런처를 사용하는 경우, 플레이어 계정이 {company-name}에 의해 TOS를 준수하지 않는 것으로 식별될 수 있습니다
 
-    이 경우 계정이 TOS를 위반하는 것이므로 {company-name}/{company-alter-name}은 원하는 대로 자유롭게 조치를 취할 수 있습니다. 물론 차단도 포함됩니다
+    이 경우 계정이 TOS를 위반하는 것이므로 {company-name}은 원하는 대로 자유롭게 조치를 취할 수 있습니다. 물론 차단도 포함됩니다
 
     비공식적인 자격으로 게임을 플레이하는 것에 대한 위험을 이해했다면 확인을 눌러 계속합니다
 

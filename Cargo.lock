@@ -1502,31 +1502,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "honkers-railway-launcher"
-version = "1.5.5"
-dependencies = [
- "anime-launcher-sdk",
- "anyhow",
- "cached",
- "enum-ordinalize",
- "fluent-templates",
- "glib-build-tools",
- "gtk4",
- "human-panic",
- "lazy_static",
- "libadwaita",
- "md-5",
- "open",
- "relm4",
- "rfd",
- "serde_json",
- "tracing",
- "tracing-subscriber",
- "unic-langid",
- "whatadistro",
-]
-
-[[package]]
 name = "human-panic"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3129,6 +3104,31 @@ name = "wasm-bindgen-shared"
 version = "0.2.92"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af190c94f2773fdb3729c55b007a722abb5384da03bc0986df4c289bf5567e96"
+
+[[package]]
+name = "wavey-launcher"
+version = "1.0.0"
+dependencies = [
+ "anime-launcher-sdk",
+ "anyhow",
+ "cached",
+ "enum-ordinalize",
+ "fluent-templates",
+ "glib-build-tools",
+ "gtk4",
+ "human-panic",
+ "lazy_static",
+ "libadwaita",
+ "md-5",
+ "open",
+ "relm4",
+ "rfd",
+ "serde_json",
+ "tracing",
+ "tracing-subscriber",
+ "unic-langid",
+ "whatadistro",
+]
 
 [[package]]
 name = "web-sys"

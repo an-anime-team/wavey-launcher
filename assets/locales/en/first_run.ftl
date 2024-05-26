@@ -1,7 +1,7 @@
 welcome = Welcome
 
 welcome-page-message =
-    Hi there! Welcome to the The Honkers Railway Launcher
+    Hi there! Welcome to the Wavey Launcher
 
     We need to prepare some stuff and download default components before you could run the game
 
@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = ToS violation warning
 
 tos-violation-warning-message =
-    This launcher is an unofficial tool, in no way related to {company-name} nor {company-alter-name}.
+    This launcher is an unofficial tool, in no way related to {company-name}.
 
     This tool is designed to facilitate playing {game-name} on Linux, and was built with the sole purpose of installing and running the game with less hassle.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     However, some components used here likely break the {company-name} Terms of Service for {game-name}.
 
-    If you are using this launcher, your player account could become identified as TOS-non-compliant by {company-name}/{company-alter-name}.
+    If you are using this launcher, your player account could become identified as TOS-non-compliant by {company-name}.
 
-    If this happens, as your account would be disobeying TOS, {company-name}/{company-alter-name} are free to do what they want. Including banning.
+    If this happens, as your account would be disobeying TOS, {company-name} are free to do what they want. Including banning.
 
     If you understand the risk of trying to play the game in an unofficial capacity, press OK to continue
 

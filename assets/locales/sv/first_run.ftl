@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = ToS varning för överträdelse
 
 tos-violation-warning-message =
-    Den här starthanteraren är ett inofficiellt verktyg, som inte på något sätt är relaterat till antingen {company-name} eller {company-alter-name}.
+    Den här starthanteraren är ett inofficiellt verktyg, som inte på något sätt är relaterat till antingen {company-name}.
 
     Det här verktyget är designat för att tillåta att spela {game-name} på Linux, och byggdes med det enda syftet att kunna installera och köra spelet med mindre krångel.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Vissa komponenter som används här kan dock bryta mot {company-name} Terms of Service för {game-name}.
 
-    Om du använder denna starthanterare kan ditt spelarkonto identifieras som TOS-non-compliant av {company-name}/{company-alter-name}.
+    Om du använder denna starthanterare kan ditt spelarkonto identifieras som TOS-non-compliant av {company-name}.
 
-    Om detta händer, eftersom ditt konto inte skulle lyda TOS, är {company-name}/{company-alter-name} fria att göra vad de vill göra. Inklusive avstängning
+    Om detta händer, eftersom ditt konto inte skulle lyda TOS, är {company-name} fria att göra vad de vill göra. Inklusive avstängning
 
     Om du förstår risken med att försöka spela spelet i en inofficiell kapacitet, tryck OK för att fortsätta
 

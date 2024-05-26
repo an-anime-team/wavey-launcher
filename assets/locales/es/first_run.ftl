@@ -9,7 +9,7 @@ welcome-page-message =
 tos-violation-warning = Advertencia de violación de ToS
 
 tos-violation-warning-message =
-    Este launcher es una herramienta no oficial, que de ninguna manera está relacionada con {company-name} ni {company-alter-name}.
+    Este launcher es una herramienta no oficial, que de ninguna manera está relacionada con {company-name}.
 
     Esta herramienta fue diseñada para facilitar jugar a {game-name} en Linux, y fue construida con el único propósito de instalar y correr el juego con menor esfuerzo.
 
@@ -17,9 +17,9 @@ tos-violation-warning-message =
 
     Sin embargo, algunos de los componentes usados aquí posiblemente incumplan los Terminos y Condiciones de Uso de {company-name} para {game-name}.
 
-    Si usas este launcher, tu cuenta podría ser identificada por {company-name}/{company-alter-name} como una cuenta incumplidora de los Términos y Condiciones.
+    Si usas este launcher, tu cuenta podría ser identificada por {company-name} como una cuenta incumplidora de los Términos y Condiciones.
 
-    Si esto sucede, {company-name}/{company-alter-name} se reservan el derecho de hacer lo que quieran con tu cuenta. Esto incluye banearte del juego.
+    Si esto sucede, {company-name} se reservan el derecho de hacer lo que quieran con tu cuenta. Esto incluye banearte del juego.
 
     Si entiendes los riesgos de intentar jugar el juego de manera extraoficial, presiona OK y ¡exploremos el vasto mundo de Teyvat!
 

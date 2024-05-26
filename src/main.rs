@@ -26,8 +26,8 @@ pub mod ui;
 use ui::main::*;
 use ui::first_run::main::*;
 
-pub const APP_ID: &str = "moe.launcher.the-honkers-railway-launcher";
-pub const APP_RESOURCE_PATH: &str = "/moe/launcher/the-honkers-railway-launcher";
+pub const APP_ID: &str = "moe.launcher.wavey-launcher";
+pub const APP_RESOURCE_PATH: &str = "/moe/launcher/wavey-launcher";
 
 pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const APP_DEBUG: bool = cfg!(debug_assertions);
@@ -49,26 +49,26 @@ lazy_static::lazy_static! {
 
     pub static ref GAME: Game = Game::new(CONFIG.game.path.for_edition(CONFIG.launcher.edition), CONFIG.launcher.edition);
 
-    /// Path to launcher folder. Standard is `$HOME/.local/share/honkers-railway-launcher`
+    /// Path to launcher folder. Standard is `$HOME/.local/share/wavey-launcher`
     pub static ref LAUNCHER_FOLDER: PathBuf = launcher_dir().expect("Failed to get launcher folder");
 
-    /// Path to launcher's cache folder. Standard is `$HOME/.cache/honkers-railway-launcher`
+    /// Path to launcher's cache folder. Standard is `$HOME/.cache/wavey-launcher`
     pub static ref CACHE_FOLDER: PathBuf = cache_dir().expect("Failed to get launcher's cache folder");
 
-    /// Path to `debug.log` file. Standard is `$HOME/.local/share/honkers-railway-launcher/debug.log`
+    /// Path to `debug.log` file. Standard is `$HOME/.local/share/wavey-launcher/debug.log`
     pub static ref DEBUG_FILE: PathBuf = LAUNCHER_FOLDER.join("debug.log");
 
-    /// Path to `background` file. Standard is `$HOME/.local/share/honkers-railway-launcher/background`
+    /// Path to `background` file. Standard is `$HOME/.local/share/wavey-launcher/background`
     pub static ref BACKGROUND_FILE: PathBuf = LAUNCHER_FOLDER.join("background");
 
     /// Path to `.keep-background` file. Used to mark launcher that it shouldn't update background picture
     ///
-    /// Standard is `$HOME/.local/share/honkers-railway-launcher/.keep-background`
+    /// Standard is `$HOME/.local/share/wavey-launcher/.keep-background`
     pub static ref KEEP_BACKGROUND_FILE: PathBuf = LAUNCHER_FOLDER.join(".keep-background");
 
     /// Path to `.first-run` file. Used to mark launcher that it should run FirstRun window
     ///
-    /// Standard is `$HOME/.local/share/honkers-railway-launcher/.first-run`
+    /// Standard is `$HOME/.local/share/wavey-launcher/.first-run`
     pub static ref FIRST_RUN_FILE: PathBuf = LAUNCHER_FOLDER.join(".first-run");
 
     /// Global app's css
@@ -199,8 +199,8 @@ fn main() -> anyhow::Result<()> {
         .add_resource_path(&format!("{APP_RESOURCE_PATH}/icons"));
 
     // Set application's title
-    gtk::glib::set_application_name("The Honkers Railway Launcher");
-    gtk::glib::set_program_name(Some("The Honkers Railway Launcher"));
+    gtk::glib::set_application_name("Wavey Launcher");
+    gtk::glib::set_program_name(Some("Wavey Launcher"));
 
     // Set UI language
     let lang = CONFIG.launcher.language.parse().expect("Wrong language format used in config");
