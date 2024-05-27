@@ -4,16 +4,16 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use relm4::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::{Config, Schema};
+use anime_launcher_sdk::wuwa::config::{Config, Schema};
 
-use anime_launcher_sdk::star_rail::states::LauncherState;
-use anime_launcher_sdk::star_rail::consts::*;
+use anime_launcher_sdk::wuwa::states::LauncherState;
+use anime_launcher_sdk::wuwa::consts::*;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::star_rail::prelude::*;
+use anime_launcher_sdk::anime_game_core::wuwa::prelude::*;
 
 use anime_launcher_sdk::sessions::SessionsExt;
-use anime_launcher_sdk::star_rail::sessions::Sessions;
+use anime_launcher_sdk::wuwa::sessions::Sessions;
 
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::filter::*;
@@ -47,7 +47,7 @@ lazy_static::lazy_static! {
     /// This one is used to prepare some launcher UI components on start
     pub static ref CONFIG: Schema = Config::get().expect("Failed to load config");
 
-    pub static ref GAME: Game = Game::new(CONFIG.game.path.for_edition(CONFIG.launcher.edition), CONFIG.launcher.edition);
+    pub static ref GAME: Game = Game::new(CONFIG.game.path.clone(), ());
 
     /// Path to launcher folder. Standard is `$HOME/.local/share/wavey-launcher`
     pub static ref LAUNCHER_FOLDER: PathBuf = launcher_dir().expect("Failed to get launcher folder");
@@ -231,7 +231,7 @@ fn main() -> anyhow::Result<()> {
         // was updated those files were updated as well, so no need for additional actions
         // 
         // Should be removed in future
-        let game_path = CONFIG.game.path.for_edition(CONFIG.launcher.edition);
+        let game_path = &CONFIG.game.path;
 
         if game_path.join("Generated").exists() {
             std::fs::remove_dir_all(game_path.join("Generated"))
@@ -271,20 +271,20 @@ fn main() -> anyhow::Result<()> {
 
             match state {
                 LauncherState::Launch => {
-                    anime_launcher_sdk::star_rail::game::run().expect("Failed to run the game");
+                    anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
 
                     return Ok(());
                 }
 
-                LauncherState::PatchNotVerified |
-                LauncherState::PredownloadAvailable { .. } |
-                LauncherState::PatchUpdateAvailable => {
-                    if just_run_game {
-                        anime_launcher_sdk::star_rail::game::run().expect("Failed to run the game");
-
-                        return Ok(());
-                    }
-                }
+                // LauncherState::PatchNotVerified |
+                // LauncherState::PredownloadAvailable { .. } |
+                // LauncherState::PatchUpdateAvailable => {
+                //     if just_run_game {
+                //         anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
+                //
+                //         return Ok(());
+                //     }
+                // }
 
                 _ => ()
             }

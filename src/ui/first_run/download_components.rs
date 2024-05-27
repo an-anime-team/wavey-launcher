@@ -10,7 +10,7 @@ use anime_launcher_sdk::components::*;
 use anime_launcher_sdk::components::wine::UnifiedWine;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::Config;
+use anime_launcher_sdk::wuwa::config::Config;
 
 use super::main::FirstRunAppMsg;
 
@@ -420,7 +420,7 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                                         _ => ()
                                     }
 
-                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(DiffUpdate::InstallerUpdate(update)));
+                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(update));
                                 });
                             }
 
@@ -533,7 +533,7 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                                         _ => ()
                                     }
 
-                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(DiffUpdate::InstallerUpdate(update)));
+                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(update));
                                 });
                             }
 

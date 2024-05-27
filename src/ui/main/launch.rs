@@ -2,8 +2,8 @@ use relm4::prelude::*;
 use gtk::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::Config;
-use anime_launcher_sdk::star_rail::config::schema::prelude::LauncherBehavior;
+use anime_launcher_sdk::wuwa::config::Config;
+use anime_launcher_sdk::wuwa::config::schema::prelude::LauncherBehavior;
 
 use crate::*;
 
@@ -24,22 +24,7 @@ pub fn launch(sender: ComponentSender<App>) {
     }
 
     std::thread::spawn(move || {
-        // Workaround of an issue appeared in 1.2 game update with lowercased telemetry.dll file
-        // This block will eventually be removed
-        let result = Config::get().and_then(|config| {
-            let telemetry = config.game.path
-                .for_edition(config.launcher.edition)
-                .join("StarRail_Data/Plugins/x86_64/Telemetry.dll");
-
-            if telemetry.exists() {
-                std::fs::remove_file(telemetry)?;
-            }
-
-            Ok(())
-        }).and_then(|_| anime_launcher_sdk::star_rail::game::run());
-
-        // if let Err(err) = anime_launcher_sdk::star_rail::game::run() {
-        if let Err(err) = result {
+        if let Err(err) = anime_launcher_sdk::wuwa::game::run() {
             tracing::error!("Failed to launch game: {err}");
 
             sender.input(AppMsg::Toast {

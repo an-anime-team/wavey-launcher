@@ -9,7 +9,7 @@ use relm4::factory::{
 use adw::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::Config;
+use anime_launcher_sdk::wuwa::config::Config;
 use anime_launcher_sdk::config::schema_blanks::prelude::*;
 
 use anime_launcher_sdk::anime_game_core::installer::downloader::Downloader;

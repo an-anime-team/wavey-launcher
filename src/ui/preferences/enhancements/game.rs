@@ -4,7 +4,7 @@ use relm4::factory::*;
 use adw::prelude::*;
 
 use anime_launcher_sdk::sessions::SessionsExt;
-use anime_launcher_sdk::star_rail::sessions::Sessions;
+use anime_launcher_sdk::wuwa::sessions::Sessions;
 
 use crate::*;
 

@@ -8,10 +8,9 @@ use adw::prelude::*;
 use gtk::glib::clone;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::star_rail::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::Config;
+use anime_launcher_sdk::wuwa::config::Config;
 
 use super::ComponentGroupMsg;
 use super::progress_bar::ProgressBarMsg;
@@ -186,7 +185,7 @@ impl SimpleAsyncComponent for ComponentVersion {
                                         _ => ()
                                     }
 
-                                    progress_bar_sender.send(ProgressBarMsg::UpdateFromState(DiffUpdate::InstallerUpdate(state)));
+                                    progress_bar_sender.send(ProgressBarMsg::UpdateFromState(state));
                                 });
                             }));
                         }

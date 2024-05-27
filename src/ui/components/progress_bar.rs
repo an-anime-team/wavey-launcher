@@ -2,7 +2,6 @@ use relm4::prelude::*;
 use adw::prelude::*;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::star_rail::prelude::*;
 
 use crate::*;
 
@@ -44,7 +43,7 @@ pub enum ProgressBarMsg {
     /// (current bytes, total bytes) 
     UpdateProgress(u64, u64),
 
-    UpdateFromState(DiffUpdate),
+    UpdateFromState(InstallerUpdate),
     SetVisible(bool)
 }
 
@@ -130,30 +129,15 @@ impl SimpleAsyncComponent for ProgressBar {
 
             ProgressBarMsg::UpdateFromState(state) => {
                 match state {
-                    DiffUpdate::CheckingFreeSpace(_) |
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::CheckingFreeSpace(_)) => self.caption = Some(tr!("checking-free-space")),
+                    InstallerUpdate::CheckingFreeSpace(_) => self.caption = Some(tr!("checking-free-space")),
 
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::DownloadingStarted(_))         => self.caption = Some(tr!("downloading")),
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::UpdatingPermissionsStarted(_)) => self.caption = Some(tr!("updating-permissions")),
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::UnpackingStarted(_))           => self.caption = Some(tr!("unpacking")),
+                    InstallerUpdate::DownloadingStarted(_)         => self.caption = Some(tr!("downloading")),
+                    InstallerUpdate::UpdatingPermissionsStarted(_) => self.caption = Some(tr!("updating-permissions")),
+                    InstallerUpdate::UnpackingStarted(_)           => self.caption = Some(tr!("unpacking")),
 
-                    DiffUpdate::ApplyingHdiffStarted => {
-                        self.caption = Some(tr!("applying-hdiff"));
-
-                        self.display_fraction = false;
-                    },
-
-                    DiffUpdate::RemovingOutdatedStarted => {
-                        self.caption = Some(tr!("removing-outdated"));
-
-                        self.display_fraction = false;
-                    },
-
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::DownloadingProgress(curr, total)) |
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::UpdatingPermissions(curr, total)) |
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::UnpackingProgress(curr, total)) |
-                    DiffUpdate::ApplyingHdiffProgress(curr, total) |
-                    DiffUpdate::RemovingOutdatedProgress(curr, total) => {
+                    InstallerUpdate::DownloadingProgress(curr, total) |
+                    InstallerUpdate::UpdatingPermissions(curr, total) |
+                    InstallerUpdate::UnpackingProgress(curr, total) => {
                         self.fraction = curr as f64 / total as f64;
 
                         self.downloaded = Some((
@@ -162,15 +146,12 @@ impl SimpleAsyncComponent for ProgressBar {
                         ));
                     }
 
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::DownloadingFinished)         => tracing::info!("Downloading finished"),
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::UpdatingPermissionsFinished) => tracing::info!("Updating permissions finished"),
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::UnpackingFinished)           => tracing::info!("Unpacking finished"),
+                    InstallerUpdate::DownloadingFinished         => tracing::info!("Downloading finished"),
+                    InstallerUpdate::UpdatingPermissionsFinished => tracing::info!("Updating permissions finished"),
+                    InstallerUpdate::UnpackingFinished           => tracing::info!("Unpacking finished"),
 
-                    DiffUpdate::ApplyingHdiffFinished    => tracing::info!("Applying hdiffs finished"),
-                    DiffUpdate::RemovingOutdatedFinished => tracing::info!("Removing outdated files finished"),
-
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::DownloadingError(err)) => tracing::error!("Downloading error: {:?}", err),
-                    DiffUpdate::InstallerUpdate(InstallerUpdate::UnpackingError(err)) => tracing::error!("Unpacking error: {:?}", err)
+                    InstallerUpdate::DownloadingError(err) => tracing::error!("Downloading error: {:?}", err),
+                    InstallerUpdate::UnpackingError(err) => tracing::error!("Unpacking error: {:?}", err)
                 }
             }
 

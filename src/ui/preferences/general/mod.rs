@@ -1,22 +1,13 @@
 use relm4::prelude::*;
 
-use relm4::factory::{
-    AsyncFactoryVecDeque,
-    AsyncFactoryComponent,
-    AsyncFactorySender
-};
-
 use gtk::prelude::*;
 use adw::prelude::*;
 
 use anime_launcher_sdk::wincompatlib::prelude::*;
 
-use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::star_rail::consts::GameEdition;
-
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::Config;
-use anime_launcher_sdk::star_rail::config::schema::launcher::{LauncherStyle, LauncherBehavior};
+use anime_launcher_sdk::wuwa::config::Config;
+use anime_launcher_sdk::wuwa::config::schema::launcher::{LauncherStyle, LauncherBehavior};
 
 pub mod components;
 
@@ -28,86 +19,12 @@ use crate::ui::preferences::main::PreferencesAppMsg;
 use crate::i18n::*;
 use crate::*;
 
-#[derive(Debug)]
-struct VoicePackageComponent {
-    locale: VoiceLocale,
-    installed: bool,
-    sensitive: bool
-}
-
-#[relm4::factory(async)]
-impl AsyncFactoryComponent for VoicePackageComponent {
-    type Init = (VoiceLocale, bool);
-    type Input = GeneralAppMsg;
-    type Output = GeneralAppMsg;
-    type CommandOutput = ();
-    type ParentWidget = adw::ExpanderRow;
-
-    view! {
-        root = adw::ActionRow {
-            set_title: &tr!(&self.locale.to_name().to_ascii_lowercase()),
-
-            add_suffix = &gtk::Button {
-                #[watch]
-                set_visible: self.installed,
-
-                #[watch]
-                set_sensitive: self.sensitive,
-
-                set_icon_name: "user-trash-symbolic",
-                add_css_class: "flat",
-                set_valign: gtk::Align::Center,
-
-                connect_clicked[sender, index] => move |_| {
-                    sender.input(GeneralAppMsg::RemoveVoicePackage(index.clone()));
-                }
-            },
-
-            add_suffix = &gtk::Button {
-                #[watch]
-                set_visible: !self.installed,
-
-                #[watch]
-                set_sensitive: self.sensitive,
-
-                set_icon_name: "document-save-symbolic",
-                add_css_class: "flat",
-                set_valign: gtk::Align::Center,
-
-                connect_clicked[sender, index] => move |_| {
-                    sender.input(GeneralAppMsg::AddVoicePackage(index.clone()));
-                }
-            }
-        }
-    }
-
-    async fn init_model(
-        init: Self::Init,
-        _index: &DynamicIndex,
-        _sender: AsyncFactorySender<Self>,
-    ) -> Self {
-        Self {
-            locale: init.0,
-            installed: init.1,
-            sensitive: true
-        }
-    }
-
-    async fn update(&mut self, msg: Self::Input, sender: AsyncFactorySender<Self>) {
-        self.installed = !self.installed;
-
-        sender.output(msg)
-            .unwrap();
-    }
-}
-
 pub struct GeneralApp {
-    voice_packages: AsyncFactoryVecDeque<VoicePackageComponent>,
     migrate_installation: Controller<MigrateInstallationApp>,
     components_page: AsyncController<ComponentsPage>,
 
     game_diff: Option<VersionDiff>,
-    main_patch: Option<(Version, JadeitePatchStatusVariant)>,
+    // main_patch: Option<(Version, JadeitePatchStatusVariant)>,
 
     style: LauncherStyle,
     languages: Vec<String>
@@ -121,14 +38,7 @@ pub enum GeneralAppMsg {
 
     /// Supposed to be called automatically on app's run when the latest UnityPlayer patch version
     /// was retrieved from remote repos
-    SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
-
-    // If one ever wish to change it to accept VoiceLocale
-    // I'd recommend to use clone!(@strong self.locale as locale => move |_| { .. })
-    // in the VoicePackage component
-    AddVoicePackage(DynamicIndex),
-    RemoveVoicePackage(DynamicIndex),
-    SetVoicePackageSensitivity(DynamicIndex, bool),
+    // SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
 
     UpdateDownloadedWine,
     UpdateDownloadedDxvk,
@@ -278,38 +188,6 @@ impl SimpleAsyncComponent for GeneralApp {
                     }
                 },
 
-                adw::ComboRow {
-                    set_title: &tr!("game-edition"),
-
-                    set_model: Some(&gtk::StringList::new(&[
-                        &tr!("global"),
-                        &tr!("china")
-                    ])),
-
-                    set_selected: GameEdition::list().iter()
-                        .position(|edition| edition == &CONFIG.launcher.edition)
-                        .unwrap() as u32,
-
-                    connect_selected_notify[sender] => move |row| {
-                        if is_ready() {
-                            #[allow(unused_must_use)]
-                            if let Ok(mut config) = Config::get() {
-                                config.launcher.edition = GameEdition::list()[row.selected() as usize];
-
-                                Config::update(config);
-
-                                sender.output(PreferencesAppMsg::UpdateLauncherState);
-                            }
-                        }
-                    }
-                },
-
-                #[local_ref]
-                voice_packages -> adw::ExpanderRow {
-                    set_title: &tr!("game-voiceovers"),
-                    set_subtitle: &tr!("game-voiceovers-description")
-                },
-
                 gtk::Box {
                     set_orientation: gtk::Orientation::Horizontal,
                     set_spacing: 8,
@@ -340,9 +218,7 @@ impl SimpleAsyncComponent for GeneralApp {
                         #[watch]
                         set_text: &match model.game_diff.as_ref() {
                             Some(diff) => match diff {
-                                VersionDiff::Latest { version: current, .. } |
-                                VersionDiff::Predownload { current, .. } |
-                                VersionDiff::Diff { current, .. } |
+                                VersionDiff::Latest(current) |
                                 VersionDiff::Outdated { current, .. } => current.to_string(),
 
                                 VersionDiff::NotInstalled { .. } => tr!("game-not-installed")
@@ -355,8 +231,6 @@ impl SimpleAsyncComponent for GeneralApp {
                         set_css_classes: match model.game_diff.as_ref() {
                             Some(diff) => match diff {
                                 VersionDiff::Latest { .. }       => &["success"],
-                                VersionDiff::Predownload { .. }  => &["accent"],
-                                VersionDiff::Diff { .. }         => &["warning"],
                                 VersionDiff::Outdated { .. }     => &["error"],
                                 VersionDiff::NotInstalled { .. } => &[]
                             }
@@ -368,16 +242,6 @@ impl SimpleAsyncComponent for GeneralApp {
                         set_tooltip_text: Some(&match model.game_diff.as_ref() {
                             Some(diff) => match diff {
                                 VersionDiff::Latest { .. } => String::new(),
-
-                                VersionDiff::Predownload { current, latest, .. } => tr!("game-predownload-available", {
-                                    "old" = current.to_string(),
-                                    "new" = latest.to_string()
-                                }),
-
-                                VersionDiff::Diff { current, latest, .. } => tr!("game-update-available", {
-                                    "old" = current.to_string(),
-                                    "new" = latest.to_string()
-                                }),
 
                                 VersionDiff::Outdated { latest, ..} => tr!("game-outdated", {
                                     "latest" = latest.to_string()
@@ -391,45 +255,45 @@ impl SimpleAsyncComponent for GeneralApp {
                     }
                 },
 
-                adw::ActionRow {
-                    set_title: &tr!("player-patch-version"),
-                    set_subtitle: &tr!("player-patch-version-description"),
-
-                    add_suffix = &gtk::Label {
-                        #[watch]
-                        set_text: &match model.main_patch.as_ref() {
-                            Some((version, _)) => version.to_string(),
-                            None => String::from("?")
-                        },
-
-                        #[watch]
-                        set_css_classes: match model.main_patch.as_ref() {
-                            Some((_, status)) => match status {
-                                JadeitePatchStatusVariant::Verified => &["success"],
-                                JadeitePatchStatusVariant::Unverified => &["warning"],
-                                JadeitePatchStatusVariant::Broken => &["error"],
-                                JadeitePatchStatusVariant::Unsafe => &["error"],
-                                JadeitePatchStatusVariant::Concerning => &["error"]
-                            }
-
-                            None => &[]
-                        },
-
-                        #[watch]
-                        set_tooltip_text: Some(&match model.main_patch.as_ref() {
-                            Some((_, status)) => match status {
-                                JadeitePatchStatusVariant::Unverified => tr!("patch-testing-tooltip"),
-                                JadeitePatchStatusVariant::Broken => tr!("patch-broken-tooltip"),
-                                JadeitePatchStatusVariant::Unsafe => tr!("patch-unsafe-tooltip"),
-                                JadeitePatchStatusVariant::Concerning => tr!("patch-concerning-tooltip"),
-
-                                _ => String::new()
-                            }
-
-                            None => String::new()
-                        })
-                    }
-                }
+                // adw::ActionRow {
+                //     set_title: &tr!("player-patch-version"),
+                //     set_subtitle: &tr!("player-patch-version-description"),
+                //
+                //     add_suffix = &gtk::Label {
+                //         #[watch]
+                //         set_text: &match model.main_patch.as_ref() {
+                //             Some((version, _)) => version.to_string(),
+                //             None => String::from("?")
+                //         },
+                //
+                //         #[watch]
+                //         set_css_classes: match model.main_patch.as_ref() {
+                //             Some((_, status)) => match status {
+                //                 JadeitePatchStatusVariant::Verified => &["success"],
+                //                 JadeitePatchStatusVariant::Unverified => &["warning"],
+                //                 JadeitePatchStatusVariant::Broken => &["error"],
+                //                 JadeitePatchStatusVariant::Unsafe => &["error"],
+                //                 JadeitePatchStatusVariant::Concerning => &["error"]
+                //             }
+                //
+                //             None => &[]
+                //         },
+                //
+                //         #[watch]
+                //         set_tooltip_text: Some(&match model.main_patch.as_ref() {
+                //             Some((_, status)) => match status {
+                //                 JadeitePatchStatusVariant::Unverified => tr!("patch-testing-tooltip"),
+                //                 JadeitePatchStatusVariant::Broken => tr!("patch-broken-tooltip"),
+                //                 JadeitePatchStatusVariant::Unsafe => tr!("patch-unsafe-tooltip"),
+                //                 JadeitePatchStatusVariant::Concerning => tr!("patch-concerning-tooltip"),
+                //
+                //                 _ => String::new()
+                //             }
+                //
+                //             None => String::new()
+                //         })
+                //     }
+                // }
             },
 
             add = &adw::PreferencesGroup {
@@ -552,11 +416,7 @@ impl SimpleAsyncComponent for GeneralApp {
     ) -> AsyncComponentParts<Self> {
         tracing::info!("Initializing general settings");
 
-        let mut model = Self {
-            voice_packages: AsyncFactoryVecDeque::builder()
-                .launch_default()
-                .forward(sender.input_sender(), std::convert::identity),
-
+        let model = Self {
             migrate_installation: MigrateInstallationApp::builder()
                 .launch(())
                 .detach(),
@@ -566,20 +426,12 @@ impl SimpleAsyncComponent for GeneralApp {
                 .forward(sender.input_sender(), std::convert::identity),
 
             game_diff: None,
-            main_patch: None,
+            // main_patch: None,
 
             style: CONFIG.launcher.style,
             languages: SUPPORTED_LANGUAGES.iter().map(|lang| tr!(format_lang(lang).as_str())).collect()
         };
 
-        for package in VoiceLocale::list() {
-            model.voice_packages.guard().push_back((
-                *package,
-                CONFIG.game.voices.iter().any(|voice| VoiceLocale::from_str(voice) == Some(*package))
-            ));
-        }
-
-        let voice_packages = model.voice_packages.widget();
         let components_page = model.components_page.widget();
 
         let widgets = view_output!();
@@ -595,66 +447,9 @@ impl SimpleAsyncComponent for GeneralApp {
                 self.game_diff = diff;
             }
 
-            GeneralAppMsg::SetMainPatch(patch) => {
-                self.main_patch = patch;
-            }
-
-            #[allow(unused_must_use)]
-            GeneralAppMsg::AddVoicePackage(index) => {
-                if let Some(package) = self.voice_packages.get(index.current_index()) {
-                    if let Ok(mut config) = Config::get() {
-                        if !config.game.voices.iter().any(|voice| VoiceLocale::from_str(voice) == Some(package.locale)) {
-                            config.game.voices.push(package.locale.to_code().to_string());
-
-                            Config::update(config);
-    
-                            sender.output(PreferencesAppMsg::UpdateLauncherState);
-                        }
-                    }
-                }
-            }
-
-            #[allow(unused_must_use)]
-            GeneralAppMsg::RemoveVoicePackage(index) => {
-                if let Some(package) = self.voice_packages.guard().get_mut(index.current_index()) {
-                    if let Ok(mut config) = Config::get() {
-                        package.sensitive = false;
-
-                        config.game.voices.retain(|voice| VoiceLocale::from_str(voice) != Some(package.locale));
-
-                        Config::update(config.clone());
-
-                        let package = VoicePackage::with_locale(package.locale, config.launcher.edition).unwrap();
-                        let game_path = config.game.path.for_edition(config.launcher.edition).to_path_buf();
-
-                        if package.is_installed_in(&game_path) {
-                            std::thread::spawn(move || {
-                                if let Err(err) = package.delete_in(game_path) {
-                                    tracing::error!("Failed to delete voice package: {:?}", package.locale());
-
-                                    sender.input(GeneralAppMsg::Toast {
-                                        title: tr!("voice-package-deletion-error"),
-                                        description: Some(err.to_string())
-                                    });
-                                }
-
-                                sender.input(GeneralAppMsg::SetVoicePackageSensitivity(index, true));
-                                sender.output(PreferencesAppMsg::UpdateLauncherState);
-                            });
-                        }
-
-                        else {
-                            sender.input(GeneralAppMsg::SetVoicePackageSensitivity(index, true));
-                        }
-                    }
-                }
-            }
-
-            GeneralAppMsg::SetVoicePackageSensitivity(index, sensitive) => {
-                if let Some(package) = self.voice_packages.guard().get_mut(index.current_index()) {
-                    package.sensitive = sensitive;
-                }
-            }
+            // GeneralAppMsg::SetMainPatch(patch) => {
+            //     self.main_patch = patch;
+            // }
 
             GeneralAppMsg::UpdateDownloadedWine => {
                 self.components_page.sender()
