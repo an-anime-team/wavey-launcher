@@ -18,7 +18,7 @@ pub fn repair_game(sender: ComponentSender<App>, progress_bar_input: Sender<Prog
     sender.input(AppMsg::SetDownloading(true));
 
     std::thread::spawn(move || {
-        match repairer::try_get_integrity_files() {
+        match repairer::try_get_integrity_files(config.launcher.edition) {
             Ok(files) => {
                 let game_path = config.game.path.to_path_buf();
 

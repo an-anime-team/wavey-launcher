@@ -188,6 +188,32 @@ impl SimpleAsyncComponent for GeneralApp {
                     }
                 },
 
+                adw::ComboRow {
+                    set_title: &tr!("game-edition"),
+
+                    set_model: Some(&gtk::StringList::new(&[
+                        &tr!("global"),
+                        &tr!("china")
+                    ])),
+
+                    set_selected: GameEdition::list().iter()
+                        .position(|edition| edition == &CONFIG.launcher.edition)
+                        .unwrap() as u32,
+
+                    connect_selected_notify[sender] => move |row| {
+                        if is_ready() {
+                            #[allow(unused_must_use)]
+                            if let Ok(mut config) = Config::get() {
+                                config.launcher.edition = GameEdition::list()[row.selected() as usize];
+
+                                Config::update(config);
+
+                                sender.output(PreferencesAppMsg::UpdateLauncherState);
+                            }
+                        }
+                    }
+                },
+
                 gtk::Box {
                     set_orientation: gtk::Orientation::Horizontal,
                     set_spacing: 8,

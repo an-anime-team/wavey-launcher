@@ -47,7 +47,7 @@ lazy_static::lazy_static! {
     /// This one is used to prepare some launcher UI components on start
     pub static ref CONFIG: Schema = Config::get().expect("Failed to load config");
 
-    pub static ref GAME: Game = Game::new(CONFIG.game.path.clone(), ());
+    pub static ref GAME: Game = Game::new(CONFIG.game.path.clone(), CONFIG.launcher.edition);
 
     /// Path to launcher folder. Standard is `$HOME/.local/share/wavey-launcher`
     pub static ref LAUNCHER_FOLDER: PathBuf = launcher_dir().expect("Failed to get launcher folder");

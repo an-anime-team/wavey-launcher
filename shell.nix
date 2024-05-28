@@ -23,6 +23,9 @@ in pkgs.mkShell {
         gcc
         cmake
         pkg-config
+
+        xdelta
+        p7zip
     ];
 
     buildInputs = with pkgs; [
