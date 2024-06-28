@@ -1,8 +1,8 @@
 let
     nixpkgs = builtins.fetchGit {
-        name = "nixos-23.11";
+        name = "nixos-24.05";
         url = "https://github.com/nixos/nixpkgs";
-        ref = "refs/heads/nixos-23.11";
+        ref = "refs/heads/nixos-24.05";
     };
 
     nixpkgs-unstable = builtins.fetchGit {
@@ -26,6 +26,7 @@ in pkgs.mkShell {
 
         xdelta
         p7zip
+        libwebp
     ];
 
     buildInputs = with pkgs; [
