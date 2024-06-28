@@ -12,9 +12,6 @@ use anime_launcher_sdk::wuwa::consts::*;
 use anime_launcher_sdk::anime_game_core::prelude::*;
 use anime_launcher_sdk::anime_game_core::wuwa::prelude::*;
 
-use anime_launcher_sdk::sessions::SessionsExt;
-use anime_launcher_sdk::wuwa::sessions::Sessions;
-
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::filter::*;
 
@@ -147,13 +144,6 @@ fn main() -> anyhow::Result<()> {
             "--run-game"           => run_game           = true,
             "--just-run-game"      => just_run_game      = true,
             "--no-verbose-tracing" => no_verbose_tracing = true,
-
-            "--session" => {
-                // Switch active session prior running the app
-                if let Some(session) = args.get(i + 1) {
-                    Sessions::set_current(session.to_owned())?;
-                }
-            },
 
             arg => gtk_args.push(arg.to_string())
         }

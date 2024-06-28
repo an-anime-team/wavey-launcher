@@ -1,6 +1,8 @@
 use relm4::prelude::*;
 use gtk::prelude::*;
 
+use anime_launcher_sdk::wincompatlib::prelude::*;
+
 use anime_launcher_sdk::config::ConfigExt;
 use anime_launcher_sdk::wuwa::config::Config;
 use anime_launcher_sdk::wuwa::config::schema::prelude::LauncherBehavior;
@@ -24,6 +26,21 @@ pub fn launch(sender: ComponentSender<App>) {
     }
 
     std::thread::spawn(move || {
+        // I honestly don't care anymore
+        let wine = config.get_selected_wine().unwrap().unwrap();
+
+        let wine = wine
+            .to_wine(config.components.path, Some(config.game.wine.builds.join(&wine.name)))
+            .with_loader(WineLoader::Current)
+            .with_arch(WineArch::Win64)
+            .with_prefix(&config.game.wine.prefix);
+
+        // Fix for the in-game browser being a black window
+        wine.run_args(["winecfg", "-v", "win7"])
+            .expect("Failed to run wine server")
+            .wait()
+            .expect("Failed to run winecfg -v win7");
+
         if let Err(err) = anime_launcher_sdk::wuwa::game::run() {
             tracing::error!("Failed to launch game: {err}");
 
