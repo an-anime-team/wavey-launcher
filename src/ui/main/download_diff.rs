@@ -10,20 +10,16 @@ use crate::ui::components::*;
 
 use super::{App, AppMsg};
 
-pub fn download_diff(sender: ComponentSender<App>, progress_bar_input: Sender<ProgressBarMsg>, mut diff: VersionDiff) {
+pub fn download_diff(sender: ComponentSender<App>, progress_bar_input: Sender<ProgressBarMsg>, diff: VersionDiff) {
     sender.input(AppMsg::SetDownloading(true));
 
     std::thread::spawn(move || {
         let config = Config::get().unwrap();
         let game_path = config.game.path.for_edition(config.launcher.edition).to_path_buf();
 
-        if let Some(temp) = config.launcher.temp {
-            diff = diff.with_temp_folder(temp);
-        }
-
         let result = diff.install_to(game_path, clone!(@strong sender => move |state| {
             match &state {
-                DiffUpdate::InstallerUpdate(InstallerUpdate::DownloadingError(err)) => {
+                InstallerUpdate::DownloadingError(err) => {
                     tracing::error!("Downloading failed: {err}");
 
                     sender.input(AppMsg::Toast {
@@ -32,7 +28,7 @@ pub fn download_diff(sender: ComponentSender<App>, progress_bar_input: Sender<Pr
                     });
                 }
 
-                DiffUpdate::InstallerUpdate(InstallerUpdate::UnpackingError(err)) => {
+                InstallerUpdate::UnpackingError(err) => {
                     tracing::error!("Unpacking failed: {err}");
 
                     sender.input(AppMsg::Toast {

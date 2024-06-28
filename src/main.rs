@@ -4,16 +4,13 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use relm4::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::{Config, Schema};
+use anime_launcher_sdk::wuwa::config::{Config, Schema};
 
-use anime_launcher_sdk::star_rail::states::LauncherState;
-use anime_launcher_sdk::star_rail::consts::*;
+use anime_launcher_sdk::wuwa::states::LauncherState;
+use anime_launcher_sdk::wuwa::consts::*;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::star_rail::prelude::*;
-
-use anime_launcher_sdk::sessions::SessionsExt;
-use anime_launcher_sdk::star_rail::sessions::Sessions;
+use anime_launcher_sdk::anime_game_core::wuwa::prelude::*;
 
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::filter::*;
@@ -61,6 +58,9 @@ lazy_static::lazy_static! {
     /// Path to `background` file. Standard is `$HOME/.local/share/wavey-launcher/background`
     pub static ref BACKGROUND_FILE: PathBuf = LAUNCHER_FOLDER.join("background");
 
+    /// Path to `background-primary` file. Standard is `$HOME/.local/share/anime-game-launcher/background-primary`
+    pub static ref BACKGROUND_PRIMARY_FILE: PathBuf = LAUNCHER_FOLDER.join("background-primary");
+
     /// Path to `.keep-background` file. Used to mark launcher that it shouldn't update background picture
     ///
     /// Standard is `$HOME/.local/share/wavey-launcher/.keep-background`
@@ -78,7 +78,7 @@ lazy_static::lazy_static! {
         }}
 
         window.classic-style {{
-            background: url(\"file://{}\");
+            background: url(\"resource://{APP_RESOURCE_PATH}/images/background.jpg\");
             background-repeat: no-repeat;
             background-size: cover;
         }}
@@ -99,7 +99,7 @@ lazy_static::lazy_static! {
         .round-bin {{
             border-radius: 24px;
         }}
-    ", BACKGROUND_FILE.to_string_lossy());
+    "); // BACKGROUND_PRIMARY_FILE.to_string_lossy(), \"file://{}\"
 }
 
 fn main() -> anyhow::Result<()> {
@@ -144,13 +144,6 @@ fn main() -> anyhow::Result<()> {
             "--run-game"           => run_game           = true,
             "--just-run-game"      => just_run_game      = true,
             "--no-verbose-tracing" => no_verbose_tracing = true,
-
-            "--session" => {
-                // Switch active session prior running the app
-                if let Some(session) = args.get(i + 1) {
-                    Sessions::set_current(session.to_owned())?;
-                }
-            },
 
             arg => gtk_args.push(arg.to_string())
         }
@@ -224,67 +217,26 @@ fn main() -> anyhow::Result<()> {
 
     // Run the app if everything's ready
     else {
-        // Temporary workaround for old patches which HAVE to be reverted
-        // I don't believe to users to read announcements so better do this
-        // 
-        // There's 2 files which were modified by the old patch, but since the game
-        // was updated those files were updated as well, so no need for additional actions
-        // 
-        // Should be removed in future
-        let game_path = CONFIG.game.path.for_edition(CONFIG.launcher.edition);
-
-        if game_path.join("Generated").exists() {
-            std::fs::remove_dir_all(game_path.join("Generated"))
-                .expect("Failed to delete 'Generated' folder");
-        }
-
-        if game_path.join("TVMBootstrap.dll").exists() {
-            std::fs::remove_file(game_path.join("TVMBootstrap.dll"))
-                .expect("Failed to delete 'TVMBootstrap.dll' file");
-        }
-
-        // AC won't say a thing about this file anyway but for consistency I decided
-        // to delete it as well
-        if game_path.join("launch.bat").exists() {
-            std::fs::remove_file(game_path.join("launch.bat"))
-                .expect("Failed to delete 'launch.bat' file");
-        }
-
-        // Patch was renaming crash reporter to disable it
-        if game_path.join("UnityCrashHandler64.exe.bak").exists() {
-            if game_path.join("UnityCrashHandler64.exe").exists() {
-                std::fs::remove_file(game_path.join("UnityCrashHandler64.exe.bak"))
-                    .expect("Failed to delete 'UnityCrashHandler64.exe.bak' file");
-            }
-
-            else {
-                std::fs::rename(game_path.join("UnityCrashHandler64.exe.bak"), game_path.join("UnityCrashHandler64.exe"))
-                    .expect("Failed to rename 'UnityCrashHandler64.exe.bak' file to 'UnityCrashHandler64.exe'");
-            }
-        }
-
-        // End of temporary workaround ^
-
         if run_game || just_run_game {
             let state = LauncherState::get_from_config(|_| {})
                 .expect("Failed to get launcher state");
 
             match state {
                 LauncherState::Launch => {
-                    anime_launcher_sdk::star_rail::game::run().expect("Failed to run the game");
+                    anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
 
                     return Ok(());
                 }
 
-                LauncherState::PatchNotVerified |
-                LauncherState::PredownloadAvailable { .. } |
-                LauncherState::PatchUpdateAvailable => {
-                    if just_run_game {
-                        anime_launcher_sdk::star_rail::game::run().expect("Failed to run the game");
-
-                        return Ok(());
-                    }
-                }
+                // LauncherState::PatchNotVerified |
+                // LauncherState::PredownloadAvailable { .. } |
+                // LauncherState::PatchUpdateAvailable => {
+                //     if just_run_game {
+                //         anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
+                //
+                //         return Ok(());
+                //     }
+                // }
 
                 _ => ()
             }

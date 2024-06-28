@@ -9,7 +9,7 @@ use relm4::factory::{
 use adw::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::Config;
+use anime_launcher_sdk::wuwa::config::Config;
 use anime_launcher_sdk::config::schema_blanks::prelude::*;
 
 use anime_launcher_sdk::anime_game_core::installer::downloader::Downloader;
@@ -19,11 +19,9 @@ use anime_launcher_sdk::is_available;
 
 use enum_ordinalize::Ordinalize;
 
-pub mod game;
 pub mod sandbox;
 pub mod environment;
 
-use game::*;
 use sandbox::*;
 use environment::*;
 
@@ -91,7 +89,6 @@ pub struct EnhancementsApp {
     discord_rpc_root_check_button: gtk::CheckButton,
 
     gamescope: AsyncController<GamescopeApp>,
-    game_page: AsyncController<GamePage>,
     sandbox_page: AsyncController<SandboxPage>,
     environment_page: AsyncController<EnvironmentPage>
 }
@@ -104,7 +101,6 @@ pub enum EnhancementsAppMsg {
 
     OpenGamescope,
     OpenMainPage,
-    OpenGameSettingsPage,
     OpenSandboxSettingsPage,
     OpenEnvironmentSettingsPage,
 
@@ -128,19 +124,6 @@ impl SimpleAsyncComponent for EnhancementsApp {
 
             add = &adw::PreferencesGroup {
                 set_title: &tr!("options"),
-
-                adw::ActionRow {
-                    set_title: &tr!("game"),
-                    set_subtitle: &tr!("game-settings-description"),
-
-                    add_suffix = &gtk::Image {
-                        set_icon_name: Some("go-next-symbolic")
-                    },
-
-                    set_activatable: true,
-
-                    connect_activated => EnhancementsAppMsg::OpenGameSettingsPage
-                },
 
                 adw::ActionRow {
                     set_title: &tr!("sandbox"),
@@ -548,9 +531,6 @@ impl SimpleAsyncComponent for EnhancementsApp {
         },
 
         #[local_ref]
-        game_page -> adw::NavigationPage,
-
-        #[local_ref]
         sandbox_page -> adw::NavigationPage,
 
         #[local_ref]
@@ -574,10 +554,6 @@ impl SimpleAsyncComponent for EnhancementsApp {
             gamescope: GamescopeApp::builder()
                 .launch(())
                 .detach(),
-
-            game_page: GamePage::builder()
-                .launch(())
-                .forward(sender.input_sender(), std::convert::identity),
 
             sandbox_page: SandboxPage::builder()
                 .launch(())
@@ -655,7 +631,6 @@ impl SimpleAsyncComponent for EnhancementsApp {
 
         let discord_rpc_icons = model.discord_rpc_icons.widget();
 
-        let game_page = model.game_page.widget();
         let sandbox_page = model.sandbox_page.widget();
         let environment_page = model.environment_page.widget();
 
@@ -691,13 +666,6 @@ impl SimpleAsyncComponent for EnhancementsApp {
                     .unwrap_unchecked()
                     .widget()
                     .pop_subpage();
-            }
-
-            EnhancementsAppMsg::OpenGameSettingsPage => unsafe {
-                PREFERENCES_WINDOW.as_ref()
-                    .unwrap_unchecked()
-                    .widget()
-                    .push_subpage(self.game_page.widget());
             }
 
             EnhancementsAppMsg::OpenSandboxSettingsPage => unsafe {

@@ -3,7 +3,7 @@ use relm4::prelude::*;
 use anime_launcher_sdk::wincompatlib::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::star_rail::config::Config;
+use anime_launcher_sdk::wuwa::config::Config;
 
 use crate::*;
 

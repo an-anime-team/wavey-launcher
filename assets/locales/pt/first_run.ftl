@@ -1,9 +1,9 @@
 welcome = Bem-vindo
 
 welcome-page-message =
-    Olá! Seja bem-vindo An Anime Game Launcher
+    Olá! Seja bem-vindo ao Wavey Launcher!
 
-    Precisamos preparar algumas coisas e baixar componentes padrões antes de poder rodar o jogo
+    Precisamos preparar algumas coisas e baixar componentes antes de executar o jogo.
 
 
 tos-violation-warning = Aviso de violação dos TdS
@@ -21,45 +21,45 @@ tos-violation-warning-message =
 
     Se isso acontecer, como sua conta estaria desobedecendo os Termos de Serviço, {company-name} são livres para fazerem o que quiserem. Incluindo banir.
 
-    Se entende o risco de tentar jogar o jogo em capacidade não oficial, aperte OK para continuar
+    Se entende o risco de tentar jogar o jogo em capacidade não oficial, aperte OK para continuar.
 
-tos-dialog-title = Tem certeza que entende o que queremos dizer?
+tos-dialog-title = Fazendo isso, você concordar em
 tos-dialog-message =
-    1. Não publique informação sobre esse projeto
-    2. Não abuse usando clientes modados
-    3. Pergunte somente em nossos servidores discord ou matrix
+    1. Não publicar informação alguma sobre esse projeto
+    2. Não abusar do launcher, usando clientes modificados
+    3. Tirar suas dúvidas apenas em nossos servidores de Suporte no Discord/Matrix
 
 
 dependencies = Dependências
-missing-dependencies-title = Algumas dependências estão faltando!
-missing-dependencies-message = Instale alguns pacotes no seu sistema antes de continuar o processo de instalação
+missing-dependencies-title = Opa, parece que algumas dependências estão faltando!
+missing-dependencies-message = Instale-as antes de continuar o processo de configuração.
 
 
-default-paths = Caminho padrão
-choose-default-paths = escolha caminho padrão
-show-all-folders = Eu sei o que estou fazendo
-show-all-folders-subtitle = Mostre configuração de seleção de caminho adicional. Faça como eu digo...
+default-paths = Diretório padrão
+choose-default-paths = Escolha o diretório padrão
+show-all-folders = Personalizar diretórios
+show-all-folders-subtitle = Mostre-me os diretórios, sei o que estou fazendo.
 runners-folder = Pasta dos Runners
 dxvks-folder = Pasta dos DXVKs
-wine-prefix-folder = Pasta dos prefixos Wine
-global-game-installation-folder = Pasta de instalação da versão global
-chinese-game-installation-folder = Pasta de instalação da versão chinesa
-fps-unlocker-folder = Pasta do desbloqueador de FPS
+wine-prefix-folder = Pasta de prefixos Wine
+global-game-installation-folder = Pasta de instalação da Edição Global
+chinese-game-installation-folder = Pasta de instalação da Edição Chinesa
+fps-unlocker-folder = Pasta do FPSUnlocker
 components-index = Índice de componentes
 patch-folder = Pasta do patch
-temp-folder = Pasta do temp
+temp-folder = Pasta temporária
 
 migrate = Migrar
 
 
-select-voice-packages = Selecione pacotes de voz
+select-voice-packages = Selecione os Pacotes de Voz
 
 
-download-components = Baixar componentes
+download-components = Instalação dos componentes
 download-dxvk = Baixar DXVK
 apply-dxvk = Aplicar DXVK
 
 
-finish = Feito
-finish-title = Está tudo feito!
-finish-message = Todos os componentes base foram baixados. Pode agora reiniciar o launcher e baixar o jogo. Bem-vindo ao clube!
+finish = Pronto!
+finish-title = Está tudo certo por aqui!
+finish-message = Todos os componentes necessários estão presentes. Agora é preciso reiniciar o launcher e instalar o jogo. Bem-vindo(a) ao clube!

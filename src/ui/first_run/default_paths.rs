@@ -22,7 +22,6 @@ pub struct DefaultPathsApp {
     game_global: PathBuf,
     game_china: PathBuf,
     components: PathBuf,
-    patch: PathBuf,
     temp: PathBuf
 }
 
@@ -35,7 +34,6 @@ pub enum Folders {
     GameGlobal,
     GameChina,
     Components,
-    Patch,
     Temp
 }
 
@@ -201,20 +199,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                 },
 
                 adw::ActionRow {
-                    set_title: &tr!("patch-folder"),
-                    set_activatable: true,
-
-                    #[watch]
-                    set_subtitle: model.patch.to_str().unwrap(),
-
-                    connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::Patch),
-
-                    add_prefix = &gtk::Image {
-                        set_icon_name: Some("folder-symbolic")
-                    }
-                },
-
-                adw::ActionRow {
                     set_title: &tr!("temp-folder"),
                     set_activatable: true,
 
@@ -309,7 +293,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
             game_global: CONFIG.game.path.global.clone(),
             game_china: CONFIG.game.path.china.clone(),
             components: CONFIG.components.path.clone(),
-            patch: CONFIG.patch.path.clone(),
 
             #[allow(clippy::or_fun_call)]
             temp: CONFIG.launcher.temp.clone().unwrap_or(std::env::temp_dir())
@@ -340,10 +323,9 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                             self.runners     = result.join("runners");
                             self.dxvks       = result.join("dxvks");
                             self.prefix      = result.join("prefix");
-                            self.game_global = result.join("HSR");
-                            self.game_china  = result.join("HSR China"); // TODO change this
+                            self.game_global = result.join("Wuthering Waves");
+                            self.game_china  = result.join("Wuthering Waves China");
                             self.components  = result.join("components");
-                            self.patch       = result.join("patch");
 
                             self.temp.clone_from(&result);
 
@@ -356,7 +338,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                         Folders::GameGlobal => self.game_global = result,
                         Folders::GameChina  => self.game_china  = result,
                         Folders::Components => self.components  = result,
-                        Folders::Patch      => self.patch       = result,
                         Folders::Temp       => self.temp        = result
                     }
                 }
@@ -380,7 +361,7 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                                 (old_config.game.path.global, &self.game_global),
                                 (old_config.game.path.china,  &self.game_china),
                                 (old_config.components.path,  &self.components),
-                                (old_config.patch.path,       &self.patch)
+                                // (old_config.patch.path,       &self.patch)
                             ];
 
                             #[allow(clippy::expect_fun_call)]
@@ -441,7 +422,6 @@ impl DefaultPathsApp {
         config.game.path.global.clone_from(&self.game_global);
         config.game.path.china.clone_from(&self.game_china);
         config.components.path.clone_from(&self.components);
-        config.patch.path.clone_from(&self.patch);
 
         config.launcher.temp = Some(self.temp.clone());
 
