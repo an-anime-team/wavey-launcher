@@ -46,11 +46,6 @@ impl SimpleComponent for AboutDialog {
                 "Nikita Podvirnyi https://github.com/krypt0nn"
             ],
 
-            add_credit_section: (Some("Patch credits"), &[
-                "@mkrsym1 https://codeberg.org/mkrsym1",
-                "@Teapot https://github.com/Teapot4195"
-            ]),
-
             add_credit_section: (Some("An Anime Team"), &[
                 "Nikita Podvirnyi https://github.com/krypt0nn",
                 "Marie Piontek https://github.com/Mar0xy",
@@ -96,7 +91,7 @@ impl SimpleComponent for AboutDialog {
 
             set_release_notes_version: &APP_VERSION,
             set_release_notes: &[
-                "Initial release"
+                "<p>Initial release</p>"
             ].join("\n"),
 
             set_modal: true,
