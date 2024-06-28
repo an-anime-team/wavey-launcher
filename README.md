@@ -5,27 +5,8 @@
 
 <p align="center">
     <a href="https://discord.gg/ck37X6UWBp">Discord</a> ·
-    <a href="https://matrix.to/#/#an-anime-game:envs.net">Matrix</a> ·
     <a href="https://github.com/an-anime-team/wavey-launcher/wiki">Wiki</a>
 </p>
-
-<br>
-
-# ⚠️ Please don't link to this repository
-
-We understand you want to help people run An Anime Game on Linux. The issue is, the more people know
-of the tools involved in it, the higher the chances The Anime Game Company will notice them, and then
-fix the flaws that let us do the needful.
-
-While sharing in your self-managed chat services and through private messaging is fine, we humbly ask
-that you refrain from publically sharing links to this repository, or to any of the tools involved.
-
-Or share them and ruin it for the dozens of Linux players. It's up to you.
-
-## If you're going to share it anyway
-
-Do what you must, but we would respectfully request that you try to label the game as "The Honkers Railway Game"
-instead of the actual name of the game, to avoid search engine parsing.
 
 <br>
 
