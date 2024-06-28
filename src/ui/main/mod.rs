@@ -311,8 +311,7 @@ impl SimpleComponent for App {
                                                 Some(LauncherState::TelemetryNotDisabled) => "security-high-symbolic",
 
                                                 Some(LauncherState::WineNotInstalled) |
-                                                Some(LauncherState::PrefixNotExists) |
-                                                Some(LauncherState::FontsNotInstalled(_)) => "document-save-symbolic",
+                                                Some(LauncherState::PrefixNotExists) => "document-save-symbolic",
 
                                                 Some(LauncherState::GameUpdateAvailable(_)) |
                                                 Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
@@ -333,8 +332,6 @@ impl SimpleComponent for App {
 
                                                 // Some(LauncherState::PatchBroken) => tr!("patch-broken"),
                                                 // Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe"),
-
-                                                Some(LauncherState::FontsNotInstalled(_)) => String::from("Install fonts"),
 
                                                 Some(LauncherState::TelemetryNotDisabled) => tr!("disable-telemetry"),
 
@@ -436,7 +433,7 @@ impl SimpleComponent for App {
                                             let result = std::process::Command::new("pkill")
                                                 .arg("-f") // full text search
                                                 .arg("-i") // case-insensitive
-                                                .arg("StarRail\\.exe")
+                                                .arg("Client-Win64-Sh")
                                                 .spawn();
 
                                             if let Err(err) = result {
@@ -600,8 +597,8 @@ impl SimpleComponent for App {
 
         group.add_action::<GameFolder>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
             let path = match Config::get() {
-                Ok(config) => config.game.path.to_path_buf(),
-                Err(_) => CONFIG.game.path.to_path_buf()
+                Ok(config) => config.game.path.for_edition(config.launcher.edition).to_path_buf(),
+                Err(_) => CONFIG.game.path.for_edition(CONFIG.launcher.edition).to_path_buf()
             };
 
             if let Err(err) = open::that(path) {
@@ -646,7 +643,7 @@ impl SimpleComponent for App {
 
         tracing::info!("Main window initialized");
 
-        let download_picture = model.style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists();
+        // let download_picture = model.style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists();
 
         // Initialize some heavy tasks
         std::thread::spawn(move || {
@@ -656,18 +653,18 @@ impl SimpleComponent for App {
 
             // Download background picture if needed
 
-            if download_picture {
-                tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-                    if let Err(err) = crate::background::download_background() {
-                        tracing::error!("Failed to download background picture: {err}");
+            // if download_picture {
+            //     tasks.push(std::thread::spawn(clone!(@strong sender => move || {
+            //         if let Err(err) = crate::background::download_background() {
+            //             tracing::error!("Failed to download background picture: {err}");
 
-                        sender.input(AppMsg::Toast {
-                            title: tr!("background-downloading-failed"),
-                            description: Some(err.to_string())
-                        });
-                    }
-                })));
-            }
+            //             sender.input(AppMsg::Toast {
+            //                 title: tr!("background-downloading-failed"),
+            //                 description: Some(err.to_string())
+            //             });
+            //         }
+            //     })));
+            // }
 
             // Update components index
 
@@ -909,9 +906,7 @@ impl SimpleComponent for App {
 
                     LauncherState::GameUpdateAvailable(diff) |
                     LauncherState::GameNotInstalled(diff)  =>
-                        download_diff::download_diff(sender, self.progress_bar.sender().to_owned(), diff.to_owned()),
-
-                    _ => ()
+                        download_diff::download_diff(sender, self.progress_bar.sender().to_owned(), diff.to_owned())
                 }
             }
 

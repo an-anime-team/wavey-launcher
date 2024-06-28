@@ -19,9 +19,9 @@ pub struct DefaultPathsApp {
     runners: PathBuf,
     dxvks: PathBuf,
     prefix: PathBuf,
-    game: PathBuf,
+    game_global: PathBuf,
+    game_china: PathBuf,
     components: PathBuf,
-    patch: PathBuf,
     temp: PathBuf
 }
 
@@ -31,9 +31,9 @@ pub enum Folders {
     Runners,
     DXVK,
     Prefix,
-    Game,
+    GameGlobal,
+    GameChina,
     Components,
-    Patch,
     Temp
 }
 
@@ -161,9 +161,23 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                     set_activatable: true,
 
                     #[watch]
-                    set_subtitle: model.game.to_str().unwrap(),
+                    set_subtitle: model.game_global.to_str().unwrap(),
 
-                    connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::Game),
+                    connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::GameGlobal),
+
+                    add_prefix = &gtk::Image {
+                        set_icon_name: Some("folder-symbolic")
+                    }
+                },
+
+                adw::ActionRow {
+                    set_title: &tr!("chinese-game-installation-folder"),
+                    set_activatable: true,
+
+                    #[watch]
+                    set_subtitle: model.game_china.to_str().unwrap(),
+
+                    connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::GameChina),
 
                     add_prefix = &gtk::Image {
                         set_icon_name: Some("folder-symbolic")
@@ -178,20 +192,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                     set_subtitle: model.components.to_str().unwrap(),
 
                     connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::Components),
-
-                    add_prefix = &gtk::Image {
-                        set_icon_name: Some("folder-symbolic")
-                    }
-                },
-
-                adw::ActionRow {
-                    set_title: &tr!("patch-folder"),
-                    set_activatable: true,
-
-                    #[watch]
-                    set_subtitle: model.patch.to_str().unwrap(),
-
-                    connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::Patch),
 
                     add_prefix = &gtk::Image {
                         set_icon_name: Some("folder-symbolic")
@@ -290,10 +290,9 @@ impl SimpleAsyncComponent for DefaultPathsApp {
             runners: CONFIG.game.wine.builds.clone(),
             dxvks: CONFIG.game.dxvk.builds.clone(),
             prefix: CONFIG.game.wine.prefix.clone(),
-            game: CONFIG.game.path.clone(),
-            // game_china: CONFIG.game.path.china.clone(),
+            game_global: CONFIG.game.path.global.clone(),
+            game_china: CONFIG.game.path.china.clone(),
             components: CONFIG.components.path.clone(),
-            patch: CONFIG.patch.path.clone(),
 
             #[allow(clippy::or_fun_call)]
             temp: CONFIG.launcher.temp.clone().unwrap_or(std::env::temp_dir())
@@ -324,9 +323,9 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                             self.runners     = result.join("runners");
                             self.dxvks       = result.join("dxvks");
                             self.prefix      = result.join("prefix");
-                            self.game        = result.join("Wuthering Waves");
+                            self.game_global = result.join("Wuthering Waves");
+                            self.game_china  = result.join("Wuthering Waves China");
                             self.components  = result.join("components");
-                            self.patch       = result.join("patch");
 
                             self.temp.clone_from(&result);
 
@@ -336,9 +335,9 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                         Folders::Runners    => self.runners     = result,
                         Folders::DXVK       => self.dxvks       = result,
                         Folders::Prefix     => self.prefix      = result,
-                        Folders::Game       => self.game        = result,
+                        Folders::GameGlobal => self.game_global = result,
+                        Folders::GameChina  => self.game_china  = result,
                         Folders::Components => self.components  = result,
-                        Folders::Patch      => self.patch       = result,
                         Folders::Temp       => self.temp        = result
                     }
                 }
@@ -359,7 +358,8 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                                 (old_config.game.wine.builds, &self.runners),
                                 (old_config.game.dxvk.builds, &self.dxvks),
                                 (old_config.game.wine.prefix, &self.prefix),
-                                (old_config.game.path,        &self.game),
+                                (old_config.game.path.global, &self.game_global),
+                                (old_config.game.path.china,  &self.game_china),
                                 (old_config.components.path,  &self.components),
                                 // (old_config.patch.path,       &self.patch)
                             ];
@@ -419,9 +419,9 @@ impl DefaultPathsApp {
         config.game.wine.builds.clone_from(&self.runners);
         config.game.dxvk.builds.clone_from(&self.dxvks);
         config.game.wine.prefix.clone_from(&self.prefix);
-        config.game.path.clone_from(&self.game);
+        config.game.path.global.clone_from(&self.game_global);
+        config.game.path.china.clone_from(&self.game_china);
         config.components.path.clone_from(&self.components);
-        config.patch.path.clone_from(&self.patch);
 
         config.launcher.temp = Some(self.temp.clone());
 

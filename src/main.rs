@@ -47,7 +47,7 @@ lazy_static::lazy_static! {
     /// This one is used to prepare some launcher UI components on start
     pub static ref CONFIG: Schema = Config::get().expect("Failed to load config");
 
-    pub static ref GAME: Game = Game::new(CONFIG.game.path.clone(), CONFIG.launcher.edition);
+    pub static ref GAME: Game = Game::new(CONFIG.game.path.for_edition(CONFIG.launcher.edition), CONFIG.launcher.edition);
 
     /// Path to launcher folder. Standard is `$HOME/.local/share/wavey-launcher`
     pub static ref LAUNCHER_FOLDER: PathBuf = launcher_dir().expect("Failed to get launcher folder");
@@ -81,7 +81,7 @@ lazy_static::lazy_static! {
         }}
 
         window.classic-style {{
-            background: url(\"file://{}\");
+            background: url(\"resource://{APP_RESOURCE_PATH}/images/background.jpg\");
             background-repeat: no-repeat;
             background-size: cover;
         }}
@@ -102,7 +102,7 @@ lazy_static::lazy_static! {
         .round-bin {{
             border-radius: 24px;
         }}
-    ", BACKGROUND_PRIMARY_FILE.to_string_lossy());
+    "); // BACKGROUND_PRIMARY_FILE.to_string_lossy(), \"file://{}\"
 }
 
 fn main() -> anyhow::Result<()> {
@@ -227,47 +227,6 @@ fn main() -> anyhow::Result<()> {
 
     // Run the app if everything's ready
     else {
-        // Temporary workaround for old patches which HAVE to be reverted
-        // I don't believe to users to read announcements so better do this
-        // 
-        // There's 2 files which were modified by the old patch, but since the game
-        // was updated those files were updated as well, so no need for additional actions
-        // 
-        // Should be removed in future
-        let game_path = &CONFIG.game.path;
-
-        if game_path.join("Generated").exists() {
-            std::fs::remove_dir_all(game_path.join("Generated"))
-                .expect("Failed to delete 'Generated' folder");
-        }
-
-        if game_path.join("TVMBootstrap.dll").exists() {
-            std::fs::remove_file(game_path.join("TVMBootstrap.dll"))
-                .expect("Failed to delete 'TVMBootstrap.dll' file");
-        }
-
-        // AC won't say a thing about this file anyway but for consistency I decided
-        // to delete it as well
-        if game_path.join("launch.bat").exists() {
-            std::fs::remove_file(game_path.join("launch.bat"))
-                .expect("Failed to delete 'launch.bat' file");
-        }
-
-        // Patch was renaming crash reporter to disable it
-        if game_path.join("UnityCrashHandler64.exe.bak").exists() {
-            if game_path.join("UnityCrashHandler64.exe").exists() {
-                std::fs::remove_file(game_path.join("UnityCrashHandler64.exe.bak"))
-                    .expect("Failed to delete 'UnityCrashHandler64.exe.bak' file");
-            }
-
-            else {
-                std::fs::rename(game_path.join("UnityCrashHandler64.exe.bak"), game_path.join("UnityCrashHandler64.exe"))
-                    .expect("Failed to rename 'UnityCrashHandler64.exe.bak' file to 'UnityCrashHandler64.exe'");
-            }
-        }
-
-        // End of temporary workaround ^
-
         if run_game || just_run_game {
             let state = LauncherState::get_from_config(|_| {})
                 .expect("Failed to get launcher state");

@@ -134,29 +134,29 @@ impl SimpleAsyncComponent for GeneralApp {
                 }
             },
 
-            add = &adw::PreferencesGroup {
-                #[watch]
-                set_visible: model.style == LauncherStyle::Classic,
+            // add = &adw::PreferencesGroup {
+            //     #[watch]
+            //     set_visible: model.style == LauncherStyle::Classic,
 
-                adw::ActionRow {
-                    set_title: &tr!("update-background"),
-                    set_subtitle: &tr!("update-background-description"),
+            //     adw::ActionRow {
+            //         set_title: &tr!("update-background"),
+            //         set_subtitle: &tr!("update-background-description"),
 
-                    add_suffix = &gtk::Switch {
-                        set_valign: gtk::Align::Center,
-                        set_active: !KEEP_BACKGROUND_FILE.exists(),
+            //         add_suffix = &gtk::Switch {
+            //             set_valign: gtk::Align::Center,
+            //             set_active: !KEEP_BACKGROUND_FILE.exists(),
 
-                        connect_state_notify => |switch| {
-                            #[allow(unused_must_use)]
-                            if switch.is_active() {
-                                std::fs::remove_file(KEEP_BACKGROUND_FILE.as_path());
-                            } else {
-                                std::fs::write(KEEP_BACKGROUND_FILE.as_path(), "");
-                            }
-                        }
-                    }
-                }
-            },
+            //             connect_state_notify => |switch| {
+            //                 #[allow(unused_must_use)]
+            //                 if switch.is_active() {
+            //                     std::fs::remove_file(KEEP_BACKGROUND_FILE.as_path());
+            //                 } else {
+            //                     std::fs::write(KEEP_BACKGROUND_FILE.as_path(), "");
+            //                 }
+            //             }
+            //         }
+            //     }
+            // },
 
             add = &adw::PreferencesGroup {
                 set_title: &tr!("general"),
@@ -517,18 +517,18 @@ impl SimpleAsyncComponent for GeneralApp {
 
             #[allow(unused_must_use)]
             GeneralAppMsg::UpdateLauncherStyle(style) => {
-                if style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists() {
-                    if let Err(err) = crate::background::download_background() {
-                        tracing::error!("Failed to download background picture");
+                // if style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists() {
+                //     if let Err(err) = crate::background::download_background() {
+                //         tracing::error!("Failed to download background picture");
 
-                        sender.input(GeneralAppMsg::Toast {
-                            title: tr!("background-downloading-failed"),
-                            description: Some(err.to_string())
-                        });
+                //         sender.input(GeneralAppMsg::Toast {
+                //             title: tr!("background-downloading-failed"),
+                //             description: Some(err.to_string())
+                //         });
 
-                        return;
-                    }
-                }
+                //         return;
+                //     }
+                // }
 
                 if let Ok(mut config) = Config::get() {
                     config.launcher.style = style;

@@ -20,7 +20,7 @@ pub fn repair_game(sender: ComponentSender<App>, progress_bar_input: Sender<Prog
     std::thread::spawn(move || {
         match repairer::try_get_integrity_files(config.launcher.edition) {
             Ok(files) => {
-                let game_path = config.game.path.to_path_buf();
+                let game_path = config.game.path.for_edition(config.launcher.edition).to_path_buf();
 
                 progress_bar_input.send(ProgressBarMsg::UpdateProgress(0, 0));
 

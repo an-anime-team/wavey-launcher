@@ -15,7 +15,7 @@ pub fn download_diff(sender: ComponentSender<App>, progress_bar_input: Sender<Pr
 
     std::thread::spawn(move || {
         let config = Config::get().unwrap();
-        let game_path = config.game.path.to_path_buf();
+        let game_path = config.game.path.for_edition(config.launcher.edition).to_path_buf();
 
         let result = diff.install_to(game_path, clone!(@strong sender => move |state| {
             match &state {
