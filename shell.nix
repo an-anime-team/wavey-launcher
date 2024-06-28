@@ -23,10 +23,6 @@ in pkgs.mkShell {
         gcc
         cmake
         pkg-config
-
-        xdelta
-        p7zip
-        libwebp
     ];
 
     buildInputs = with pkgs; [

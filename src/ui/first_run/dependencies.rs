@@ -68,7 +68,7 @@ impl SimpleAsyncComponent for DependenciesApp {
                         },
 
                         gtk::Entry {
-                            set_text: "sudo pacman -Syu git libwebp",
+                            set_text: "sudo pacman -Syu git",
                             set_editable: false
                         }
                     },
@@ -85,7 +85,7 @@ impl SimpleAsyncComponent for DependenciesApp {
                         },
 
                         gtk::Entry {
-                            set_text: "sudo apt install git webp",
+                            set_text: "sudo apt install git",
                             set_editable: false
                         }
                     },
@@ -102,7 +102,7 @@ impl SimpleAsyncComponent for DependenciesApp {
                         },
 
                         gtk::Entry {
-                            set_text: "sudo dnf install git libwebp",
+                            set_text: "sudo dnf install git",
                             set_editable: false
                         }
                     },
@@ -117,10 +117,6 @@ impl SimpleAsyncComponent for DependenciesApp {
                         adw::PreferencesGroup {
                             adw::ActionRow {
                                 set_title: "git"
-                            },
-
-                            adw::ActionRow {
-                                set_title: "libwebp"
                             }
                         }
                     }
@@ -187,22 +183,18 @@ impl SimpleAsyncComponent for DependenciesApp {
         match msg {
             #[allow(unused_must_use)]
             DependenciesAppMsg::Continue => {
-                let packages = ["git", "dwebp"];
-
-                for package in packages {
-                    if !is_available(package) {
-                        sender.output(Self::Output::Toast {
-                            title: tr!("package-not-available", {
-                                "package" = package
-                            }),
-                            description: None
-                        });
-
-                        return;
-                    }
+                if !is_available("git") {
+                    sender.output(Self::Output::Toast {
+                        title: tr!("package-not-available", {
+                            "package" = "git"
+                        }),
+                        description: None
+                    });
                 }
 
-                sender.output(Self::Output::ScrollToDefaultPaths);
+                else {
+                    sender.output(Self::Output::ScrollToDefaultPaths);
+                }
             }
 
             DependenciesAppMsg::Exit => relm4::main_application().quit()
