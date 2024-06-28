@@ -72,8 +72,8 @@ checksum = "5c6cb57a04249c6480766f7f7cef5467412af1490f8d1e243141daddada3264f"
 
 [[package]]
 name = "anime-game-core"
-version = "1.19.0"
-source = "git+https://github.com/an-anime-team/anime-game-core?tag=1.20.0#2ff3f043ab914708668eb042ee50f58d4c244b20"
+version = "1.20.1"
+source = "git+https://github.com/an-anime-team/anime-game-core?tag=1.20.1#1f1bddbea690842e9a62aee20f1e64cb0d69a22e"
 dependencies = [
  "anyhow",
  "brotli-decompressor",
@@ -92,14 +92,15 @@ dependencies = [
  "tar",
  "thiserror",
  "tracing",
+ "wincompatlib",
  "xz",
  "zip",
 ]
 
 [[package]]
 name = "anime-launcher-sdk"
-version = "1.15.0"
-source = "git+https://github.com/an-anime-team/anime-launcher-sdk?tag=1.15.0#0a5429a633d0512ed87ebafadde000f5148f71d8"
+version = "1.15.1"
+source = "git+https://github.com/an-anime-team/anime-launcher-sdk?tag=1.15.1#cf97861f7a132733496c8f6e848123bdc59b0c37"
 dependencies = [
  "anime-game-core",
  "anyhow",

@@ -14,6 +14,7 @@ mod repair_game;
 mod download_wine;
 mod create_prefix;
 mod download_diff;
+mod install_vcrun2015;
 mod disable_telemetry;
 mod launch;
 
@@ -308,6 +309,8 @@ impl SimpleComponent for App {
                                                 // Some(LauncherState::PatchNotInstalled) |
                                                 // Some(LauncherState::PatchUpdateAvailable) => "document-save-symbolic",
 
+                                                Some(LauncherState::Vcrun2015NotInstalled) => "document-save-symbolic",
+
                                                 Some(LauncherState::TelemetryNotDisabled) => "security-high-symbolic",
 
                                                 Some(LauncherState::WineNotInstalled) |
@@ -332,6 +335,9 @@ impl SimpleComponent for App {
 
                                                 // Some(LauncherState::PatchBroken) => tr!("patch-broken"),
                                                 // Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe"),
+
+                                                // TODO: wouldn't hurt to translate right?
+                                                Some(LauncherState::Vcrun2015NotInstalled) => String::from("Install vcrun2015"),
 
                                                 Some(LauncherState::TelemetryNotDisabled) => tr!("disable-telemetry"),
 
@@ -898,6 +904,8 @@ impl SimpleComponent for App {
 
                     // LauncherState::PatchNotInstalled |
                     // LauncherState::PatchUpdateAvailable => update_patch::update_patch(sender, self.progress_bar.sender().to_owned()),
+
+                    LauncherState::Vcrun2015NotInstalled => install_vcrun2015::install_vcrun2015(sender),
 
                     LauncherState::TelemetryNotDisabled => disable_telemetry::disable_telemetry(sender),
 
