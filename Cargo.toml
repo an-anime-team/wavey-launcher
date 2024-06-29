@@ -1,6 +1,6 @@
 [package]
 name = "wavey-launcher"
-version = "1.0.0"
+version = "1.0.1"
 description = "Wavey Launcher"
 authors = ["Nikita Podvirnyi <krypt0nn@vk.com>"]
 homepage = "https://github.com/an-anime-team/wavey-launcher"
