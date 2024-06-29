@@ -41,6 +41,8 @@ pub fn launch(sender: ComponentSender<App>) {
             .wait()
             .expect("Failed to run winecfg -v win7");
 
+        wine.shutdown().expect("Failed to shutdown wineserver");
+
         if let Err(err) = anime_launcher_sdk::wuwa::game::run() {
             tracing::error!("Failed to launch game: {err}");
 

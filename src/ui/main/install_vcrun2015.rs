@@ -21,7 +21,7 @@ pub fn install_vcrun2015(sender: ComponentSender<App>) {
             .with_arch(WineArch::Win64)
             .with_prefix(&config.game.wine.prefix);
 
-        if let Err(err) = vcrun2015::install(wine, config.game.wine.prefix, config.launcher.temp) {
+        if let Err(err) = vcrun2015::install(wine.clone(), config.game.wine.prefix, config.launcher.temp) {
             tracing::error!("Failed to install vcrun2015");
 
             // TODO: wouldn't hurt to translate
@@ -30,6 +30,8 @@ pub fn install_vcrun2015(sender: ComponentSender<App>) {
                 description: Some(err.to_string())
             });
         }
+
+        wine.shutdown().expect("Failed to shutdown wineserver");
 
         sender.input(AppMsg::DisableButtons(false));
         sender.input(AppMsg::UpdateLauncherState {
