@@ -91,7 +91,11 @@ impl SimpleComponent for AboutDialog {
 
             set_release_notes_version: &APP_VERSION,
             set_release_notes: &[
-                "<p>Initial release</p>"
+                "<p>Fixed</p>",
+
+                "<ul>",
+                    "<li>Added wine shutdown calls for explicit synchronization</li>",
+                "</ul>"
             ].join("\n"),
 
             set_modal: true,

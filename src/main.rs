@@ -138,14 +138,14 @@ fn main() -> anyhow::Result<()> {
     let mut gtk_args = Vec::new();
 
     // Parse arguments
-    for i in 0..args.len() {
-        match args[i].as_str() {
+    for arg in args {
+        match arg.as_str() {
             "--debug"              => force_debug        = true,
             "--run-game"           => run_game           = true,
             "--just-run-game"      => just_run_game      = true,
             "--no-verbose-tracing" => no_verbose_tracing = true,
 
-            arg => gtk_args.push(arg.to_string())
+            _ => gtk_args.push(arg)
         }
     }
 
