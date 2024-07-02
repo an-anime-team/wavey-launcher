@@ -10,6 +10,15 @@
 
 <br>
 
+<h2 align="center">⚠️ Game is not playable at the current state of the launcher ⚠️</h2>
+
+Due to expected changes from the game's side, current launcher version doesn't support its anti-cheat. I'm not going to update it to support temporary workarounds.
+Manualy launching methods could be found in our discord server. Please don't use this app until it's updated.
+
+Repository will be archived until proper solution is found.
+
+<br>
+
 # ♥️ Useful links and thanks
 
 * Original patch project without which this project wouldn't be possible. Link is omitted for "privacy" purposes
