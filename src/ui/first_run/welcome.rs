@@ -41,7 +41,7 @@ impl SimpleAsyncComponent for WelcomeApp {
 
                 gtk::Label {
                     set_label: &tr!("welcome-page-message"),
-    
+
                     set_justify: gtk::Justification::Center,
                     set_wrap: true,
                     set_margin_top: 32
@@ -51,12 +51,12 @@ impl SimpleAsyncComponent for WelcomeApp {
             add = &adw::PreferencesGroup {
                 set_valign: gtk::Align::Center,
                 set_vexpand: true,
-    
+
                 gtk::Box {
                     set_orientation: gtk::Orientation::Horizontal,
                     set_halign: gtk::Align::Center,
                     set_spacing: 8,
-    
+
                     gtk::Button {
                         set_label: &tr!("continue"),
                         set_css_classes: &["suggested-action", "pill"],
@@ -79,11 +79,7 @@ impl SimpleAsyncComponent for WelcomeApp {
         match msg {
             #[allow(unused_must_use)]
             WelcomeAppMsg::Continue => {
-                if !is_available("git") {
-                    sender.output(Self::Output::ScrollToDependencies);
-                } else {
-                    sender.output(Self::Output::ScrollToDefaultPaths);
-                }
+                sender.output(Self::Output::ScrollToTosWarning);
             }
         }
     }

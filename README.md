@@ -8,8 +8,6 @@
     <a href="https://github.com/an-anime-team/wavey-launcher/wiki">Wiki</a>
 </p>
 
-<br>
-
 # ♥️ Useful links and thanks
 
 * Original patch project without which this project wouldn't be possible. Link is omitted for "privacy" purposes

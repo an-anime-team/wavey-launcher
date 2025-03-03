@@ -10,11 +10,10 @@ use adw::prelude::*;
 use gtk::glib::clone;
 
 mod repair_game;
-// mod update_patch;
+mod update_patch;
 mod download_wine;
 mod create_prefix;
 mod download_diff;
-mod install_vcrun2015;
 mod disable_telemetry;
 mod launch;
 
@@ -79,7 +78,7 @@ pub enum AppMsg {
 
     /// Supposed to be called automatically on app's run when the latest main patch version
     /// was retrieved from remote repos
-    // SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
+    SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
 
     /// Supposed to be called automatically on app's run when the launcher state was chosen
     SetLauncherState(Option<LauncherState>),
@@ -301,15 +300,12 @@ impl SimpleComponent for App {
                                         adw::ButtonContent {
                                             #[watch]
                                             set_icon_name: match &model.state {
-                                                Some(LauncherState::Launch) // |
-                                                // Some(LauncherState::PatchNotVerified) |
-                                                // Some(LauncherState::PatchConcerning) |
-                                                    => "media-playback-start-symbolic",
+                                                Some(LauncherState::Launch) |
+                                                Some(LauncherState::PatchNotVerified) |
+                                                Some(LauncherState::PatchConcerning) => "media-playback-start-symbolic",
 
-                                                // Some(LauncherState::PatchNotInstalled) |
-                                                // Some(LauncherState::PatchUpdateAvailable) => "document-save-symbolic",
-
-                                                Some(LauncherState::Vcrun2015NotInstalled) => "document-save-symbolic",
+                                                Some(LauncherState::PatchNotInstalled) |
+                                                Some(LauncherState::PatchUpdateAvailable) => "document-save-symbolic",
 
                                                 Some(LauncherState::TelemetryNotDisabled) => "security-high-symbolic",
 
@@ -319,25 +315,22 @@ impl SimpleComponent for App {
                                                 Some(LauncherState::GameUpdateAvailable(_)) |
                                                 Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
 
-                                                // Some(LauncherState::PatchBroken) |
-                                                // Some(LauncherState::PatchUnsafe) |
+                                                Some(LauncherState::PatchBroken) |
+                                                Some(LauncherState::PatchUnsafe) |
                                                 None => "window-close-symbolic"
                                             },
 
                                             #[watch]
                                             set_label: &match &model.state {
-                                                Some(LauncherState::Launch) => tr!("launch"),
-                                                // Some(LauncherState::PatchNotVerified) |
-                                                // Some(LauncherState::PatchConcerning)
+                                                Some(LauncherState::Launch) |
+                                                Some(LauncherState::PatchNotVerified) |
+                                                Some(LauncherState::PatchConcerning) => tr!("launch"),
 
-                                                // Some(LauncherState::PatchNotInstalled) |
-                                                // Some(LauncherState::PatchUpdateAvailable) => tr!("download-patch"),
+                                                Some(LauncherState::PatchNotInstalled) |
+                                                Some(LauncherState::PatchUpdateAvailable) => tr!("download-patch"),
 
-                                                // Some(LauncherState::PatchBroken) => tr!("patch-broken"),
-                                                // Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe"),
-
-                                                // TODO: wouldn't hurt to translate right?
-                                                Some(LauncherState::Vcrun2015NotInstalled) => String::from("Install vcrun2015"),
+                                                Some(LauncherState::PatchBroken) => tr!("patch-broken"),
+                                                Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe"),
 
                                                 Some(LauncherState::TelemetryNotDisabled) => tr!("disable-telemetry"),
 
@@ -370,8 +363,8 @@ impl SimpleComponent for App {
 
                                         #[watch]
                                         set_sensitive: !model.disabled_buttons && match &model.state {
-                                            // Some(LauncherState::PatchBroken) |
-                                            // Some(LauncherState::PatchUnsafe) => false,
+                                            Some(LauncherState::PatchBroken) |
+                                            Some(LauncherState::PatchUnsafe) => false,
 
                                             Some(_) => true,
                                             None => false
@@ -379,12 +372,12 @@ impl SimpleComponent for App {
 
                                         #[watch]
                                         set_css_classes: match &model.state {
-                                            // Some(LauncherState::PatchNotVerified) => &["warning", "pill"],
+                                            Some(LauncherState::PatchNotVerified) => &["warning", "pill"],
 
-                                            // Some(LauncherState::PatchBroken) |
-                                            // Some(LauncherState::PatchUnsafe) |
-                                            // Some(LauncherState::PatchConcerning)
-                                            //     => &["error", "pill"],
+                                            Some(LauncherState::PatchBroken) |
+                                            Some(LauncherState::PatchUnsafe) |
+                                            Some(LauncherState::PatchConcerning)
+                                                => &["error", "pill"],
 
                                             Some(_) => &["suggested-action", "pill"],
                                             None => &["pill"]
@@ -392,10 +385,10 @@ impl SimpleComponent for App {
 
                                         #[watch]
                                         set_tooltip_text: Some(&match &model.state {
-                                            // Some(LauncherState::PatchNotVerified) => tr!("patch-testing-tooltip"),
-                                            // Some(LauncherState::PatchBroken) => tr!("patch-broken-tooltip"),
-                                            // Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe-tooltip"),
-                                            // Some(LauncherState::PatchConcerning) => tr!("patch-concerning-tooltip"),
+                                            Some(LauncherState::PatchNotVerified) => tr!("patch-testing-tooltip"),
+                                            Some(LauncherState::PatchBroken) => tr!("patch-broken-tooltip"),
+                                            Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe-tooltip"),
+                                            Some(LauncherState::PatchConcerning) => tr!("patch-concerning-tooltip"),
 
                                             _ => String::new()
                                         }),
@@ -430,11 +423,16 @@ impl SimpleComponent for App {
                                         connect_clicked[sender] => move |_| {
                                             sender.input(AppMsg::DisableKillGameButton(true));
 
-                                            std::thread::spawn(clone!(@strong sender => move || {
-                                                std::thread::sleep(std::time::Duration::from_secs(3));
+                                            std::thread::spawn(clone!(
+                                                #[strong]
+                                                sender,
 
-                                                sender.input(AppMsg::DisableKillGameButton(false));
-                                            }));
+                                                move || {
+                                                    std::thread::sleep(std::time::Duration::from_secs(3));
+
+                                                    sender.input(AppMsg::DisableKillGameButton(false));
+                                                }
+                                            ));
 
                                             let result = std::process::Command::new("pkill")
                                                 .arg("-f") // full text search
@@ -450,11 +448,11 @@ impl SimpleComponent for App {
                                             }
 
                                             // Old warning message which I don't really understand now:
-                                            // 
+                                            //
                                             // Doesn't work on all the systems
                                             // e.g. won't work if you didn't install wine system-wide
                                             // there's some reasons for it
-                                            // 
+                                            //
                                             // UPD: I've tried this, and the problem is that it's completely pointless
                                             //      For whatever reason it just doesn't work
 
@@ -590,56 +588,76 @@ impl SimpleComponent for App {
 
         // TODO: reduce code somehow
 
-        group.add_action::<LauncherFolder>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
-            if let Err(err) = open::that(LAUNCHER_FOLDER.as_path()) {
-                sender.input(AppMsg::Toast {
-                    title: tr!("launcher-folder-opening-error"),
-                    description: Some(err.to_string())
-                });
+        group.add_action::<LauncherFolder>(RelmAction::new_stateless(clone!(
+            #[strong]
+            sender,
 
-                tracing::error!("Failed to open launcher folder: {err}");
-            }
-        })));
-
-        group.add_action::<GameFolder>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
-            let path = match Config::get() {
-                Ok(config) => config.game.path.for_edition(config.launcher.edition).to_path_buf(),
-                Err(_) => CONFIG.game.path.for_edition(CONFIG.launcher.edition).to_path_buf()
-            };
-
-            if let Err(err) = open::that(path) {
-                sender.input(AppMsg::Toast {
-                    title: tr!("game-folder-opening-error"),
-                    description: Some(err.to_string())
-                });
-
-                tracing::error!("Failed to open game folder: {err}");
-            }
-        })));
-
-        group.add_action::<ConfigFile>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
-            if let Ok(file) = config_file() {
-                if let Err(err) = open::that(file) {
+            move |_| {
+                if let Err(err) = open::that(LAUNCHER_FOLDER.as_path()) {
                     sender.input(AppMsg::Toast {
-                        title: tr!("config-file-opening-error"),
+                        title: tr!("launcher-folder-opening-error"),
                         description: Some(err.to_string())
                     });
 
-                    tracing::error!("Failed to open config file: {err}");
+                    tracing::error!("Failed to open launcher folder: {err}");
                 }
             }
-        })));
+        )));
 
-        group.add_action::<DebugFile>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
-            if let Err(err) = open::that(crate::DEBUG_FILE.as_os_str()) {
-                sender.input(AppMsg::Toast {
-                    title: tr!("debug-file-opening-error"),
-                    description: Some(err.to_string())
-                });
+        group.add_action::<GameFolder>(RelmAction::new_stateless(clone!(
+            #[strong]
+            sender,
 
-                tracing::error!("Failed to open debug file: {err}");
+            move |_| {
+                let path = match Config::get() {
+                    Ok(config) => config.game.path.for_edition(config.launcher.edition).to_path_buf(),
+                    Err(_) => CONFIG.game.path.for_edition(CONFIG.launcher.edition).to_path_buf(),
+                };
+
+                if let Err(err) = open::that(path) {
+                    sender.input(AppMsg::Toast {
+                        title: tr!("game-folder-opening-error"),
+                        description: Some(err.to_string())
+                    });
+
+                    tracing::error!("Failed to open game folder: {err}");
+                }
             }
-        })));
+        )));
+
+        group.add_action::<ConfigFile>(RelmAction::new_stateless(clone!(
+            #[strong]
+            sender,
+
+            move |_| {
+                if let Ok(file) = config_file() {
+                    if let Err(err) = open::that(file) {
+                        sender.input(AppMsg::Toast {
+                            title: tr!("config-file-opening-error"),
+                            description: Some(err.to_string())
+                        });
+
+                        tracing::error!("Failed to open config file: {err}");
+                    }
+                }
+            }
+        )));
+
+        group.add_action::<DebugFile>(RelmAction::new_stateless(clone!(
+            #[strong]
+            sender,
+
+            move |_| {
+                if let Err(err) = open::that(crate::DEBUG_FILE.as_os_str()) {
+                    sender.input(AppMsg::Toast {
+                        title: tr!("debug-file-opening-error"),
+                        description: Some(err.to_string())
+                    });
+
+                    tracing::error!("Failed to open debug file: {err}");
+                }
+            }
+        )));
 
         group.add_action::<About>(RelmAction::new_stateless(move |_| {
             about_dialog_broker.send(AboutDialogMsg::Show);
@@ -649,7 +667,7 @@ impl SimpleComponent for App {
 
         tracing::info!("Main window initialized");
 
-        // let download_picture = model.style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists();
+        let download_picture = model.style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists();
 
         // Initialize some heavy tasks
         std::thread::spawn(move || {
@@ -659,116 +677,136 @@ impl SimpleComponent for App {
 
             // Download background picture if needed
 
-            // if download_picture {
-            //     tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-            //         if let Err(err) = crate::background::download_background() {
-            //             tracing::error!("Failed to download background picture: {err}");
+            if download_picture {
+                tasks.push(std::thread::spawn(clone!(
+                    #[strong]
+                    sender,
 
-            //             sender.input(AppMsg::Toast {
-            //                 title: tr!("background-downloading-failed"),
-            //                 description: Some(err.to_string())
-            //             });
-            //         }
-            //     })));
-            // }
+                    move || {
+                        if let Err(err) = crate::background::download_background() {
+                            tracing::error!("Failed to download background picture: {err}");
+
+                            sender.input(AppMsg::Toast {
+                                title: tr!("background-downloading-failed"),
+                                description: Some(err.to_string())
+                            });
+                        }
+                    }
+                )));
+            }
 
             // Update components index
 
-            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-                let components = ComponentsLoader::new(&CONFIG.components.path);
+            tasks.push(std::thread::spawn(clone!(
+                #[strong]
+                sender,
 
-                match components.is_sync(&CONFIG.components.servers) {
-                    Ok(Some(_)) => (),
+                move || {
+                    let components = ComponentsLoader::new(&CONFIG.components.path);
 
-                    Ok(None) => {
-                        for host in &CONFIG.components.servers {
-                            match components.sync(host) {
-                                Ok(changes) => {
-                                    sender.input(AppMsg::Toast {
-                                        title: tr!("components-index-updated"),
-                                        description: if changes.is_empty() {
-                                            None
-                                        } else {
-                                            Some(changes.into_iter()
-                                                .map(|line| format!("- {line}"))
-                                                .collect::<Vec<_>>()
-                                                .join("\n"))
-                                        }
-                                    });
+                    match components.is_sync(&CONFIG.components.servers) {
+                        Ok(Some(_)) => (),
 
-                                    break;
-                                }
+                        Ok(None) => {
+                            for host in &CONFIG.components.servers {
+                                match components.sync(host) {
+                                    Ok(changes) => {
+                                        sender.input(AppMsg::Toast {
+                                            title: tr!("components-index-updated"),
+                                            description: if changes.is_empty() {
+                                                None
+                                            } else {
+                                                Some(changes.into_iter()
+                                                    .map(|line| format!("- {line}"))
+                                                    .collect::<Vec<_>>()
+                                                    .join("\n"))
+                                            }
+                                        });
 
-                                Err(err) => {
-                                    tracing::error!("Failed to sync components index");
+                                        break;
+                                    }
 
-                                    sender.input(AppMsg::Toast {
-                                        title: tr!("components-index-sync-failed"),
-                                        description: Some(err.to_string())
-                                    });
+                                    Err(err) => {
+                                        tracing::error!("Failed to sync components index");
+
+                                        sender.input(AppMsg::Toast {
+                                            title: tr!("components-index-sync-failed"),
+                                            description: Some(err.to_string())
+                                        });
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    Err(err) => {
-                        tracing::error!("Failed to verify that components index synced");
+                        Err(err) => {
+                            tracing::error!("Failed to verify that components index synced");
 
-                        sender.input(AppMsg::Toast {
-                            title: tr!("components-index-verify-failed"),
-                            description: Some(err.to_string())
-                        });
+                            sender.input(AppMsg::Toast {
+                                title: tr!("components-index-verify-failed"),
+                                description: Some(err.to_string())
+                            });
+                        }
                     }
                 }
-            })));
+            )));
 
             // Update initial patch status
 
-            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-                // Get main patch status
-                // sender.input(AppMsg::SetMainPatch(match jadeite::get_metadata() {
-                //     Ok(metadata) => {
-                //         let status = GAME.get_version()
-                //             .map(|version| metadata.games.hsr.global.get_status(version))
-                //             .unwrap_or(metadata.games.hsr.global.status);
-                //
-                //         Some((metadata.jadeite.version, status))
-                //     }
-                //
-                //     Err(err) => {
-                //         tracing::error!("Failed to fetch patch metadata: {err}");
-                //
-                //         sender.input(AppMsg::Toast {
-                //             title: tr!("patch-info-fetching-error"),
-                //             description: Some(err.to_string())
-                //         });
-                //
-                //         None
-                //     }
-                // }));
+            tasks.push(std::thread::spawn(clone!(
+                #[strong]
+                sender,
 
-                // tracing::info!("Updated patch status");
-            })));
+                move || {
+                    // Get main patch status
+                    sender.input(AppMsg::SetMainPatch(match jadeite::get_metadata() {
+                        Ok(metadata) => {
+                            let status = GAME.get_version()
+                                .map(|version| metadata.games.hsr.global.get_status(version))
+                                .unwrap_or(metadata.games.hsr.global.status);
+
+                            Some((metadata.jadeite.version, status))
+                        }
+
+                        Err(err) => {
+                            tracing::error!("Failed to fetch patch metadata: {err}");
+
+                            sender.input(AppMsg::Toast {
+                                title: tr!("patch-info-fetching-error"),
+                                description: Some(err.to_string())
+                            });
+
+                            None
+                        }
+                    }));
+
+                    tracing::info!("Updated patch status");
+                }
+            )));
 
             // Update initial game version status
 
-            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-                sender.input(AppMsg::SetGameDiff(match GAME.try_get_diff() {
-                    Ok(diff) => Some(diff),
-                    Err(err) => {
-                        tracing::error!("Failed to find game diff: {err}");
+            tasks.push(std::thread::spawn(clone!(
+                #[strong]
+                sender,
 
-                        sender.input(AppMsg::Toast {
-                            title: tr!("game-diff-finding-error"),
-                            description: Some(err.to_string())
-                        });
+                move || {
+                    sender.input(AppMsg::SetGameDiff(match GAME.try_get_diff() {
+                        Ok(diff) => Some(diff),
+                        Err(err) => {
+                            tracing::error!("Failed to find game diff: {err}");
 
-                        None
-                    }
-                }));
+                            sender.input(AppMsg::Toast {
+                                title: tr!("game-diff-finding-error"),
+                                description: Some(err.to_string())
+                            });
 
-                tracing::info!("Updated game version status");
-            })));
+                            None
+                        }
+                    }));
+
+                    tracing::info!("Updated game version status");
+                }
+            )));
 
             // Await for tasks to finish execution
             for task in tasks {
@@ -802,24 +840,29 @@ impl SimpleComponent for App {
                     self.disabled_buttons = true;
                 }
 
-                let updater = clone!(@strong sender => move |state| {
-                    if show_status_page {
-                        match state {
-                            StateUpdating::Components => {
-                                // tr!("loading-launcher-state--components")
-                                sender.input(AppMsg::SetLoadingStatus(Some(Some(String::from("Components")))));
-                            }
+                let updater = clone!(
+                    #[strong]
+                    sender,
 
-                            StateUpdating::Game => {
-                                sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--game")))));
-                            }
+                    move |state| {
+                        if show_status_page {
+                            match state {
+                                StateUpdating::Components => {
+                                    // tr!("loading-launcher-state--components")
+                                    sender.input(AppMsg::SetLoadingStatus(Some(Some(String::from("Components")))));
+                                }
+                                
+                                StateUpdating::Game => {
+                                    sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--game")))));
+                                }
 
-                            // StateUpdating::Patch => {
-                            //     sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--patch")))));
-                            // }
+                                StateUpdating::Patch => {
+                                    sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--patch")))));
+                                }
+                            }
                         }
                     }
-                });
+                );
 
                 let state = match LauncherState::get_from_config(updater) {
                     Ok(state) => Some(state),
@@ -827,7 +870,7 @@ impl SimpleComponent for App {
                         tracing::error!("Failed to update launcher state: {err}");
 
                         self.toast(tr!("launcher-state-updating-error"), Some(err.to_string()));
-    
+
                         None
                     }
                 };
@@ -857,10 +900,10 @@ impl SimpleComponent for App {
                 PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetGameDiff(diff));
             }
 
-            // #[allow(unused_must_use)]
-            // AppMsg::SetMainPatch(patch) => unsafe {
-            //     PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetMainPatch(patch));
-            // }
+            #[allow(unused_must_use)]
+            AppMsg::SetMainPatch(patch) => unsafe {
+                PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetMainPatch(patch));
+            }
 
             AppMsg::SetLauncherState(state) => {
                 self.state = state;
@@ -898,14 +941,17 @@ impl SimpleComponent for App {
 
             AppMsg::PerformAction => unsafe {
                 match self.state.as_ref().unwrap_unchecked() {
-                    // LauncherState::PatchNotVerified |
-                    // LauncherState::PatchConcerning |
+                    LauncherState::PatchNotVerified |
+                    LauncherState::PatchConcerning |
+                    LauncherState::PatchBroken |
+                    LauncherState::PatchUnsafe |
+                    // LauncherState::PredownloadAvailable { patch: JadeitePatchStatusVariant::Verified, .. } |
+                    // LauncherState::PredownloadAvailable { patch: JadeitePatchStatusVariant::Unverified, .. } |
+                    // LauncherState::PredownloadAvailable { patch: JadeitePatchStatusVariant::Concerning, .. } |
                     LauncherState::Launch => launch::launch(sender),
 
-                    // LauncherState::PatchNotInstalled |
-                    // LauncherState::PatchUpdateAvailable => update_patch::update_patch(sender, self.progress_bar.sender().to_owned()),
-
-                    LauncherState::Vcrun2015NotInstalled => install_vcrun2015::install_vcrun2015(sender),
+                    LauncherState::PatchNotInstalled |
+                    LauncherState::PatchUpdateAvailable => update_patch::update_patch(sender, self.progress_bar.sender().to_owned()),
 
                     LauncherState::TelemetryNotDisabled => disable_telemetry::disable_telemetry(sender),
 

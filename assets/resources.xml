@@ -3,7 +3,6 @@
   <gresource prefix="/moe/launcher/wavey-launcher">
     <file preprocess="xml-stripblanks">images/modern.svg</file>
     <file preprocess="xml-stripblanks">images/classic.svg</file>
-    <file>images/background.jpg</file>
   </gresource>
 
   <gresource prefix="/moe/launcher/wavey-launcher/icons/hicolor/scalable/apps">

@@ -8,6 +8,7 @@ use anime_launcher_sdk::anime_game_core::wuwa::prelude::*;
 use anime_launcher_sdk::config::ConfigExt;
 use anime_launcher_sdk::wuwa::config::Config;
 use anime_launcher_sdk::wuwa::config::schema::launcher::LauncherStyle;
+use crate::*;
 
 use crate::tr;
 
@@ -29,7 +30,7 @@ pub enum PreferencesAppMsg {
 
     /// Supposed to be called automatically on app's run when the latest main patch version
     /// was retrieved from remote repos
-    // SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
+    SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
 
     SetLauncherStyle(LauncherStyle),
 
@@ -110,10 +111,10 @@ impl SimpleAsyncComponent for PreferencesApp {
                 self.general.emit(GeneralAppMsg::SetGameDiff(diff));
             }
 
-            // #[allow(unused_must_use)]
-            // PreferencesAppMsg::SetMainPatch(patch) => {
-            //     self.general.sender().send(GeneralAppMsg::SetMainPatch(patch));
-            // }
+            #[allow(unused_must_use)]
+            PreferencesAppMsg::SetMainPatch(patch) => {
+                self.general.sender().send(GeneralAppMsg::SetMainPatch(patch));
+            }
 
             #[allow(unused_must_use)]
             PreferencesAppMsg::SetLauncherStyle(style) => {

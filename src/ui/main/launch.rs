@@ -35,6 +35,21 @@ pub fn launch(sender: ComponentSender<App>) {
             .with_arch(WineArch::Win64)
             .with_prefix(&config.game.wine.prefix);
 
+        // Could definitely make this better
+        if config.game.enhancements.fix_launch_dialog {
+            let command = ["reg", "add", "HKCU\\Software\\Wine\\DllOverrides", "/v", "krsdkexternal.exe", "/f"];
+            wine.run_args_with_env(command, config.game.wine.sync.get_env_vars())
+                .expect("Failed to run wine server")
+                .wait()
+                .expect(&format!("Failed to run command {:?}", command));
+        } else {
+            let command = ["reg", "delete", "HKCU\\Software\\Wine\\DllOverrides", "/v", "krsdkexternal.exe", "/f"];
+            wine.run_args_with_env(command, config.game.wine.sync.get_env_vars())
+                .expect("Failed to run wine server")
+                .wait()
+                .expect(&format!("Failed to run command {:?}", command));
+        }
+
         // Fix for the in-game browser being a black window
         wine.run_args_with_env(["winecfg", "-v", "win7"], config.game.wine.sync.get_env_vars())
             .expect("Failed to run wine server")

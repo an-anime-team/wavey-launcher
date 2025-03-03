@@ -58,8 +58,8 @@ lazy_static::lazy_static! {
     /// Path to `background` file. Standard is `$HOME/.local/share/wavey-launcher/background`
     pub static ref BACKGROUND_FILE: PathBuf = LAUNCHER_FOLDER.join("background");
 
-    /// Path to `background-primary` file. Standard is `$HOME/.local/share/anime-game-launcher/background-primary`
-    pub static ref BACKGROUND_PRIMARY_FILE: PathBuf = LAUNCHER_FOLDER.join("background-primary");
+    /// Path to the processed `background` file. Standard is `$HOME/.cache/anime-game-launcher/background`
+    pub static ref PROCESSED_BACKGROUND_FILE: PathBuf = CACHE_FOLDER.join("background");
 
     /// Path to `.keep-background` file. Used to mark launcher that it shouldn't update background picture
     ///
@@ -73,33 +73,33 @@ lazy_static::lazy_static! {
 
     /// Global app's css
     static ref GLOBAL_CSS: String = format!("
-        progressbar > text {{
-            margin-bottom: 4px;
-        }}
+            progressbar > text {{
+                margin-bottom: 4px;
+            }}
 
-        window.classic-style {{
-            background: url(\"resource://{APP_RESOURCE_PATH}/images/background.jpg\");
-            background-repeat: no-repeat;
-            background-size: cover;
-        }}
+            window.classic-style {{
+                background: url(\"file://{}\");
+                background-repeat: no-repeat;
+                background-size: cover;
+            }}
 
-        window.classic-style progressbar {{
-            background-color: #00000020;
-            border-radius: 16px;
-            padding: 8px 16px;
-        }}
+            window.classic-style progressbar {{
+                background-color: #00000020;
+                border-radius: 16px;
+                padding: 8px 16px;
+            }}
 
-        window.classic-style progressbar:hover {{
-            background-color: #00000060;
-            color: #ffffff;
-            transition-duration: 0.5s;
-            transition-timing-function: linear;
-        }}
+            window.classic-style progressbar:hover {{
+                background-color: #00000060;
+                color: #ffffff;
+                transition-duration: 0.5s;
+                transition-timing-function: linear;
+            }}
 
-        .round-bin {{
-            border-radius: 24px;
-        }}
-    "); // BACKGROUND_PRIMARY_FILE.to_string_lossy(), \"file://{}\"
+            .round-bin {{
+                border-radius: 24px;
+            }}
+        ", PROCESSED_BACKGROUND_FILE.to_string_lossy());
 }
 
 fn main() -> anyhow::Result<()> {
@@ -120,6 +120,12 @@ fn main() -> anyhow::Result<()> {
         config.launcher.language = i18n::format_lang(&i18n::get_default_lang());
 
         Config::update_raw(config).expect("Failed to update config");
+    }
+
+    // Create cache folder if it doesn't exist.
+    if !CACHE_FOLDER.exists() {
+        std::fs::create_dir_all(CACHE_FOLDER.as_path())
+            .expect("Failed to create cache folder");
     }
 
     // Force debug output
@@ -228,15 +234,14 @@ fn main() -> anyhow::Result<()> {
                     return Ok(());
                 }
 
-                // LauncherState::PatchNotVerified |
-                // LauncherState::PredownloadAvailable { .. } |
-                // LauncherState::PatchUpdateAvailable => {
-                //     if just_run_game {
-                //         anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
-                //
-                //         return Ok(());
-                //     }
-                // }
+                LauncherState::PatchNotVerified |
+                LauncherState::PatchUpdateAvailable => {
+                    if just_run_game {
+                        anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
+
+                        return Ok(());
+                    }
+                }
 
                 _ => ()
             }

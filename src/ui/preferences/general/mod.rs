@@ -24,7 +24,7 @@ pub struct GeneralApp {
     components_page: AsyncController<ComponentsPage>,
 
     game_diff: Option<VersionDiff>,
-    // main_patch: Option<(Version, JadeitePatchStatusVariant)>,
+    main_patch: Option<(Version, JadeitePatchStatusVariant)>,
 
     style: LauncherStyle,
     languages: Vec<String>
@@ -38,7 +38,7 @@ pub enum GeneralAppMsg {
 
     /// Supposed to be called automatically on app's run when the latest UnityPlayer patch version
     /// was retrieved from remote repos
-    // SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
+    SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
 
     UpdateDownloadedWine,
     UpdateDownloadedDxvk,
@@ -134,29 +134,29 @@ impl SimpleAsyncComponent for GeneralApp {
                 }
             },
 
-            // add = &adw::PreferencesGroup {
-            //     #[watch]
-            //     set_visible: model.style == LauncherStyle::Classic,
+            add = &adw::PreferencesGroup {
+                #[watch]
+                set_visible: model.style == LauncherStyle::Classic,
 
-            //     adw::ActionRow {
-            //         set_title: &tr!("update-background"),
-            //         set_subtitle: &tr!("update-background-description"),
+                adw::ActionRow {
+                    set_title: &tr!("update-background"),
+                    set_subtitle: &tr!("update-background-description"),
 
-            //         add_suffix = &gtk::Switch {
-            //             set_valign: gtk::Align::Center,
-            //             set_active: !KEEP_BACKGROUND_FILE.exists(),
+                    add_suffix = &gtk::Switch {
+                        set_valign: gtk::Align::Center,
+                        set_active: !KEEP_BACKGROUND_FILE.exists(),
 
-            //             connect_state_notify => |switch| {
-            //                 #[allow(unused_must_use)]
-            //                 if switch.is_active() {
-            //                     std::fs::remove_file(KEEP_BACKGROUND_FILE.as_path());
-            //                 } else {
-            //                     std::fs::write(KEEP_BACKGROUND_FILE.as_path(), "");
-            //                 }
-            //             }
-            //         }
-            //     }
-            // },
+                        connect_state_notify => |switch| {
+                            #[allow(unused_must_use)]
+                            if switch.is_active() {
+                                std::fs::remove_file(KEEP_BACKGROUND_FILE.as_path());
+                            } else {
+                                std::fs::write(KEEP_BACKGROUND_FILE.as_path(), "");
+                            }
+                        }
+                    }
+                }
+            },
 
             add = &adw::PreferencesGroup {
                 set_title: &tr!("general"),
@@ -181,7 +181,7 @@ impl SimpleAsyncComponent for GeneralApp {
                                 config.launcher.language = crate::i18n::format_lang(SUPPORTED_LANGUAGES
                                     .get(row.selected() as usize)
                                     .unwrap_or(&SUPPORTED_LANGUAGES[0]));
-    
+
                                 Config::update(config);
                             }
                         }
@@ -257,7 +257,7 @@ impl SimpleAsyncComponent for GeneralApp {
                         set_css_classes: match model.game_diff.as_ref() {
                             Some(diff) => match diff {
                                 VersionDiff::Latest { .. }       => &["success"],
-                                VersionDiff::Outdated { .. }     => &["error"],
+                                VersionDiff::Outdated { .. }     => &["warning"],
                                 VersionDiff::NotInstalled { .. } => &[]
                             }
 
@@ -269,8 +269,9 @@ impl SimpleAsyncComponent for GeneralApp {
                             Some(diff) => match diff {
                                 VersionDiff::Latest { .. } => String::new(),
 
-                                VersionDiff::Outdated { latest, ..} => tr!("game-outdated", {
-                                    "latest" = latest.to_string()
+                                VersionDiff::Outdated { current, latest, ..} => tr!("game-update-available", {
+                                    "old" = current.to_string(),
+                                    "new" = latest.to_string()
                                 }),
 
                                 VersionDiff::NotInstalled { .. } => String::new()
@@ -281,45 +282,45 @@ impl SimpleAsyncComponent for GeneralApp {
                     }
                 },
 
-                // adw::ActionRow {
-                //     set_title: &tr!("player-patch-version"),
-                //     set_subtitle: &tr!("player-patch-version-description"),
-                //
-                //     add_suffix = &gtk::Label {
-                //         #[watch]
-                //         set_text: &match model.main_patch.as_ref() {
-                //             Some((version, _)) => version.to_string(),
-                //             None => String::from("?")
-                //         },
-                //
-                //         #[watch]
-                //         set_css_classes: match model.main_patch.as_ref() {
-                //             Some((_, status)) => match status {
-                //                 JadeitePatchStatusVariant::Verified => &["success"],
-                //                 JadeitePatchStatusVariant::Unverified => &["warning"],
-                //                 JadeitePatchStatusVariant::Broken => &["error"],
-                //                 JadeitePatchStatusVariant::Unsafe => &["error"],
-                //                 JadeitePatchStatusVariant::Concerning => &["error"]
-                //             }
-                //
-                //             None => &[]
-                //         },
-                //
-                //         #[watch]
-                //         set_tooltip_text: Some(&match model.main_patch.as_ref() {
-                //             Some((_, status)) => match status {
-                //                 JadeitePatchStatusVariant::Unverified => tr!("patch-testing-tooltip"),
-                //                 JadeitePatchStatusVariant::Broken => tr!("patch-broken-tooltip"),
-                //                 JadeitePatchStatusVariant::Unsafe => tr!("patch-unsafe-tooltip"),
-                //                 JadeitePatchStatusVariant::Concerning => tr!("patch-concerning-tooltip"),
-                //
-                //                 _ => String::new()
-                //             }
-                //
-                //             None => String::new()
-                //         })
-                //     }
-                // }
+                adw::ActionRow {
+                    set_title: &tr!("player-patch-version"),
+                    set_subtitle: &tr!("player-patch-version-description"),
+
+                    add_suffix = &gtk::Label {
+                        #[watch]
+                        set_text: &match model.main_patch.as_ref() {
+                            Some((version, _)) => version.to_string(),
+                            None => String::from("?")
+                        },
+
+                        #[watch]
+                        set_css_classes: match model.main_patch.as_ref() {
+                            Some((_, status)) => match status {
+                                JadeitePatchStatusVariant::Verified => &["success"],
+                                JadeitePatchStatusVariant::Unverified => &["warning"],
+                                JadeitePatchStatusVariant::Broken => &["error"],
+                                JadeitePatchStatusVariant::Unsafe => &["error"],
+                                JadeitePatchStatusVariant::Concerning => &["error"]
+                            }
+
+                            None => &[]
+                        },
+
+                        #[watch]
+                        set_tooltip_text: Some(&match model.main_patch.as_ref() {
+                            Some((_, status)) => match status {
+                                JadeitePatchStatusVariant::Unverified => tr!("patch-testing-tooltip"),
+                                JadeitePatchStatusVariant::Broken => tr!("patch-broken-tooltip"),
+                                JadeitePatchStatusVariant::Unsafe => tr!("patch-unsafe-tooltip"),
+                                JadeitePatchStatusVariant::Concerning => tr!("patch-concerning-tooltip"),
+
+                                _ => String::new()
+                            }
+
+                            None => String::new()
+                        })
+                    }
+                }
             },
 
             add = &adw::PreferencesGroup {
@@ -452,7 +453,7 @@ impl SimpleAsyncComponent for GeneralApp {
                 .forward(sender.input_sender(), std::convert::identity),
 
             game_diff: None,
-            // main_patch: None,
+            main_patch: None,
 
             style: CONFIG.launcher.style,
             languages: SUPPORTED_LANGUAGES.iter().map(|lang| tr!(format_lang(lang).as_str())).collect()
@@ -473,9 +474,9 @@ impl SimpleAsyncComponent for GeneralApp {
                 self.game_diff = diff;
             }
 
-            // GeneralAppMsg::SetMainPatch(patch) => {
-            //     self.main_patch = patch;
-            // }
+            GeneralAppMsg::SetMainPatch(patch) => {
+                self.main_patch = patch;
+            }
 
             GeneralAppMsg::UpdateDownloadedWine => {
                 self.components_page.sender()
@@ -517,18 +518,18 @@ impl SimpleAsyncComponent for GeneralApp {
 
             #[allow(unused_must_use)]
             GeneralAppMsg::UpdateLauncherStyle(style) => {
-                // if style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists() {
-                //     if let Err(err) = crate::background::download_background() {
-                //         tracing::error!("Failed to download background picture");
+                if style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists() {
+                    if let Err(err) = crate::background::download_background() {
+                        tracing::error!("Failed to download background picture");
 
-                //         sender.input(GeneralAppMsg::Toast {
-                //             title: tr!("background-downloading-failed"),
-                //             description: Some(err.to_string())
-                //         });
+                        sender.input(GeneralAppMsg::Toast {
+                            title: tr!("background-downloading-failed"),
+                            description: Some(err.to_string())
+                        });
 
-                //         return;
-                //     }
-                // }
+                        return;
+                    }
+                }
 
                 if let Ok(mut config) = Config::get() {
                     config.launcher.style = style;
